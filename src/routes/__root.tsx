@@ -79,14 +79,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Student Voice — anonymous college complaints" },
+      { name: "description", content: "An anonymous board where students raise complaints about the college. Voted true by peers reaches the Director and VC." },
+      { property: "og:title", content: "Student Voice" },
+      { property: "og:description", content: "Anonymous, USN-verified complaints board." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
