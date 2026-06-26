@@ -74,8 +74,8 @@ function AuthPage() {
       const fp = await deviceFingerprint();
       const { error: claimErr } = await supabase.rpc("claim_usn", {
         _usn: parsed.data.usn,
-        _fingerprint: fp,
-        _ip_hash: null,
+        _fingerprint: fp ?? undefined,
+        _ip_hash: undefined,
       });
       if (claimErr) { toast.error(claimErr.message); setBusy(false); return; }
       await refreshProfile();
@@ -97,7 +97,7 @@ function AuthPage() {
       // If they signed up before but never claimed a USN (e.g. confirmed email), claim now.
       if (data.user && usn) {
         const fp = await deviceFingerprint();
-        await supabase.rpc("claim_usn", { _usn: usn.toUpperCase().trim(), _fingerprint: fp, _ip_hash: null });
+        await supabase.rpc("claim_usn", { _usn: usn.toUpperCase().trim(), _fingerprint: fp ?? undefined, _ip_hash: undefined });
       }
       await refreshProfile();
       navigate({ to: "/feed" });
@@ -118,7 +118,7 @@ function AuthPage() {
         .regex(/^[0-9]{2}[A-Z]{3,4}[0-9]{3}$/)
         .parse(usn.toUpperCase().trim());
       const fp = await deviceFingerprint();
-      const { error } = await supabase.rpc("claim_usn", { _usn: parsed, _fingerprint: fp, _ip_hash: null });
+      const { error } = await supabase.rpc("claim_usn", { _usn: parsed, _fingerprint: fp ?? undefined, _ip_hash: undefined });
       if (error) throw error;
       await refreshProfile();
       toast.success("USN linked.");
