@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { ScrollText, ShieldCheck, LogOut, UserCircle2 } from "lucide-react";
+import { ShieldCheck, LogOut, UserCircle2 } from "lucide-react";
+import logo from "@/assets/mu-soe-logo.asset.json";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const { user, profile, isAdmin, signOut } = useAuth();
@@ -11,7 +12,11 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-border bg-card/60 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
           <Link to="/" className="flex items-center gap-2 font-serif text-lg font-semibold text-primary">
-            <ScrollText className="h-5 w-5" /> Student Voice
+            <img src={logo.url} alt="MU SoE" className="h-8 w-8 rounded-md object-contain ring-1 ring-border bg-card" />
+            <span className="leading-tight">
+              Student Voice
+              <span className="block text-[10px] font-sans font-normal uppercase tracking-wider text-muted-foreground">MU School of Engineering</span>
+            </span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
             <Link to="/" className="rounded px-3 py-1.5 hover:bg-muted">Public</Link>
