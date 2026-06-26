@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { runResolutionAndSend } from "@/lib/escalations.functions";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -35,6 +37,7 @@ function AdminPage() {
     },
     enabled: !!user && isAdmin,
   });
+  const resolveAndSend = useServerFn(runResolutionAndSend);
 
   if (loading) return <SiteShell><p className="text-sm text-muted-foreground">Loading…</p></SiteShell>;
   if (!user) return <SiteShell><p>You need to <Link to="/auth" className="underline">sign in</Link>.</p></SiteShell>;
@@ -52,10 +55,15 @@ function AdminPage() {
     qc.invalidateQueries({ queryKey: ["recipients"] });
   }
   async function runResolve() {
-    const { error } = await supabase.rpc("resolve_posts");
-    if (error) toast.error(error.message);
-    else toast.success("Resolution pass complete.");
-    qc.invalidateQueries({ queryKey: ["public_posts"] });
+    try {
+      const r = await resolveAndSend();
+      toast.success(
+        `Resolved ${r.resolved ?? 0}. Emails sent for ${r.sent} verified post(s) to ${r.recipients} recipient(s).`,
+      );
+      qc.invalidateQueries({ queryKey: ["public_posts"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to run resolution.");
+    }
   }
 
   return (
@@ -89,8 +97,10 @@ function AdminPage() {
       </section>
 
       <section className="rounded-xl border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold">Run resolution pass</h2>
-        <p className="mt-1 text-xs text-muted-foreground">Verifies/deletes posts that have met thresholds (runs on a cron too).</p>
+        <h2 className="text-sm font-semibold">Run resolution &amp; send letters</h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Verifies/deletes posts that have met thresholds and emails verified complaints to the Director and VC from the connected Gmail account.
+        </p>
         <Button className="mt-3" onClick={runResolve}>Run now</Button>
       </section>
     </SiteShell>
