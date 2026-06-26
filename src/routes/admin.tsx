@@ -24,7 +24,7 @@ function AdminPage() {
   const qc = useQueryClient();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("director");
+  const [role, setRole] = useState<"director" | "vc" | "other">("director");
 
   const recipients = useQuery({
     queryKey: ["recipients"],
@@ -69,7 +69,7 @@ function AdminPage() {
           <div><Label htmlFor="rn" className="text-xs">Name</Label><Input id="rn" value={name} onChange={(e) => setName(e.target.value)} /></div>
           <div><Label htmlFor="re" className="text-xs">Email</Label><Input id="re" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
           <div><Label htmlFor="rr" className="text-xs">Role</Label>
-            <select id="rr" value={role} onChange={(e) => setRole(e.target.value)} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
+            <select id="rr" value={role} onChange={(e) => setRole(e.target.value as "director" | "vc" | "other")} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
               <option value="director">Director</option>
               <option value="vc">VC</option>
               <option value="other">Other</option>
