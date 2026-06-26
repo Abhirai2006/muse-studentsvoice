@@ -81,10 +81,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Student Voice — anonymous college complaints" },
       { name: "description", content: "An anonymous board where students raise complaints about the college. Voted true by peers reaches the Director and VC." },
-      { property: "og:title", content: "Student Voice" },
-      { property: "og:description", content: "Anonymous, USN-verified complaints board." },
+      { property: "og:title", content: "Student Voice — anonymous college complaints" },
+      { property: "og:description", content: "An anonymous board where students raise complaints about the college. Voted true by peers reaches the Director and VC." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Student Voice — anonymous college complaints" },
+      { name: "twitter:description", content: "An anonymous board where students raise complaints about the college. Voted true by peers reaches the Director and VC." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8dcafc85-66ea-4d73-9ecd-56a8e53dce47/id-preview-d679923b--17d1606f-9db0-4518-a58f-fe853d56ef30.lovable.app-1782471045696.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8dcafc85-66ea-4d73-9ecd-56a8e53dce47/id-preview-d679923b--17d1606f-9db0-4518-a58f-fe853d56ef30.lovable.app-1782471045696.png" },
     ],
     links: [
       {
