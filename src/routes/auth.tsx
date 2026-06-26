@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { SiteShell } from "@/components/SiteShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -182,6 +183,35 @@ function AuthPage() {
             {busy ? "Please wait…" : mode === "signup" ? "Create account" : "Sign in"}
           </Button>
         </form>
+        <div className="my-4 flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="h-px flex-1 bg-border" />
+          <span>or</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            try {
+              const result = await lovable.auth.signInWithOAuth("google", {
+                redirect_uri: window.location.origin + "/auth",
+              });
+              if (result.error) throw new Error(result.error.message ?? "Google sign-in failed");
+              if (result.redirected) return;
+              await refreshProfile();
+              navigate({ to: "/feed" });
+            } catch (err) {
+              toast.error((err as Error).message);
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          Continue with Google
+        </Button>
         <button
           className="mt-4 text-xs text-muted-foreground underline"
           onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
