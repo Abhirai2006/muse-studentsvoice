@@ -6,8 +6,8 @@ export function SplashScreen({ onDone }: { onDone?: () => void }) {
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setLeaving(true), 1600);
-    const t2 = setTimeout(() => onDone?.(), 2200);
+    const t1 = setTimeout(() => setLeaving(true), 700);
+    const t2 = setTimeout(() => onDone?.(), 1050);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -25,9 +25,9 @@ export function SplashScreen({ onDone }: { onDone?: () => void }) {
         <img
           src={building.url}
           alt=""
-          className="h-full w-full object-cover opacity-20"
+          className="h-full w-full object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/45 to-background/85" />
       </div>
       <div className="relative flex flex-col items-center text-center">
         <div className="animate-[fadeUp_700ms_ease-out_both]">
