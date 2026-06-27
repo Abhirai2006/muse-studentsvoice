@@ -122,10 +122,13 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const [showSplash, setShowSplash] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return !sessionStorage.getItem("splash_seen");
-  });
+  const [showSplash, setShowSplash] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("splash_seen")) return;
+    setShowSplash(true);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -134,7 +137,7 @@ function RootComponent() {
           {showSplash && (
             <SplashScreen
               onDone={() => {
-                sessionStorage.setItem("splash_seen", "1");
+                try { sessionStorage.setItem("splash_seen", "1"); } catch {}
                 setShowSplash(false);
               }}
             />
