@@ -155,6 +155,7 @@ export type Database = {
         Row: {
           author_id: string
           body: string
+          category: Database["public"]["Enums"]["post_category"]
           created_at: string
           id: string
           resolved_at: string | null
@@ -164,6 +165,7 @@ export type Database = {
         Insert: {
           author_id: string
           body: string
+          category?: Database["public"]["Enums"]["post_category"]
           created_at?: string
           id?: string
           resolved_at?: string | null
@@ -173,6 +175,7 @@ export type Database = {
         Update: {
           author_id?: string
           body?: string
+          category?: Database["public"]["Enums"]["post_category"]
           created_at?: string
           id?: string
           resolved_at?: string | null
@@ -369,6 +372,7 @@ export type Database = {
       public_posts: {
         Row: {
           body: string | null
+          category: Database["public"]["Enums"]["post_category"] | null
           comment_count: number | null
           created_at: string | null
           false_count: number | null
@@ -402,6 +406,15 @@ export type Database = {
     Enums: {
       app_role: "admin" | "student"
       escalation_status: "pending" | "sent" | "failed"
+      post_category:
+        | "hostel"
+        | "mess"
+        | "academics"
+        | "transport"
+        | "exams"
+        | "infrastructure"
+        | "safety"
+        | "other"
       post_status:
         | "open"
         | "verified_true"
@@ -537,6 +550,16 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "student"],
       escalation_status: ["pending", "sent", "failed"],
+      post_category: [
+        "hostel",
+        "mess",
+        "academics",
+        "transport",
+        "exams",
+        "infrastructure",
+        "safety",
+        "other",
+      ],
       post_status: [
         "open",
         "verified_true",

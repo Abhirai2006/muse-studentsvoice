@@ -26,6 +26,15 @@ function Index() {
     queryFn: () => fetchPublicPosts(),
   });
 
+  const weekCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const verifiedAll = (data ?? []).filter((p) => p.status === "verified_true");
+  const verifiedThisWeek = verifiedAll
+    .filter((p) => p.resolved_at && new Date(p.resolved_at).getTime() > weekCutoff)
+    .sort((a, b) => (b.true_count - b.false_count) - (a.true_count - a.false_count))
+    .slice(0, 3);
+  const totalOpen = (data ?? []).filter((p) => p.status === "open").length;
+  const totalVerified = verifiedAll.length;
+
   return (
     <SiteShell>
       <section className="mb-8 rounded-xl border border-border bg-card p-6">
@@ -46,6 +55,32 @@ function Index() {
           </p>
         )}
       </section>
+
+      <section className="mb-8 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-border bg-card p-4">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Open complaints</p>
+          <p className="mt-1 font-serif text-2xl font-semibold">{totalOpen}</p>
+        </div>
+        <div className="rounded-xl border border-border bg-card p-4">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Verified &amp; escalated</p>
+          <p className="mt-1 font-serif text-2xl font-semibold text-primary">{totalVerified}</p>
+        </div>
+        <div className="rounded-xl border border-border bg-card p-4">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Verified this week</p>
+          <p className="mt-1 font-serif text-2xl font-semibold">{verifiedThisWeek.length}</p>
+        </div>
+      </section>
+
+      {verifiedThisWeek.length > 0 && (
+        <section className="mb-8">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Trending verified this week
+          </h2>
+          <div className="space-y-3">
+            {verifiedThisWeek.map((p) => <PostCard key={p.id} post={p} compact />)}
+          </div>
+        </section>
+      )}
 
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         Latest complaints

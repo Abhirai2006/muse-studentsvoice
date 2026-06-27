@@ -1,8 +1,32 @@
 import { supabase } from "@/integrations/supabase/client";
 
+export const POST_CATEGORIES = [
+  "hostel",
+  "mess",
+  "academics",
+  "transport",
+  "exams",
+  "infrastructure",
+  "safety",
+  "other",
+] as const;
+export type PostCategory = (typeof POST_CATEGORIES)[number];
+
+export const CATEGORY_LABEL: Record<PostCategory, string> = {
+  hostel: "Hostel",
+  mess: "Mess",
+  academics: "Academics",
+  transport: "Transport",
+  exams: "Exams",
+  infrastructure: "Infrastructure",
+  safety: "Safety",
+  other: "Other",
+};
+
 export type PublicPost = {
   id: string;
   body: string;
+  category: PostCategory;
   status: "open" | "verified_true" | "deleted_false" | "removed_by_author";
   created_at: string;
   updated_at: string;

@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth";
+import { ThemeProvider } from "../lib/theme";
 import { Toaster } from "../components/ui/sonner";
 import { useState } from "react";
 import { SplashScreen } from "../components/SplashScreen";
@@ -128,19 +129,21 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {showSplash && (
-          <SplashScreen
-            onDone={() => {
-              sessionStorage.setItem("splash_seen", "1");
-              setShowSplash(false);
-            }}
-          />
-        )}
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <Toaster richColors position="top-center" />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          {showSplash && (
+            <SplashScreen
+              onDone={() => {
+                sessionStorage.setItem("splash_seen", "1");
+                setShowSplash(false);
+              }}
+            />
+          )}
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+          <Toaster richColors position="top-center" />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
