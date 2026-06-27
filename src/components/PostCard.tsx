@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ShieldCheck, ThumbsUp, ThumbsDown, MessageCircle, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { PublicPost } from "@/lib/posts";
+import { CATEGORY_LABEL } from "@/lib/posts";
 
 export function PostCard({ post, compact }: { post: PublicPost; compact?: boolean }) {
   const total = post.true_count + post.false_count;
@@ -15,9 +16,14 @@ export function PostCard({ post, compact }: { post: PublicPost; compact?: boolea
       className="block rounded-lg border border-border bg-card p-4 shadow-sm transition hover:border-primary/40 hover:shadow"
     >
       <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+        <span className="inline-flex items-center gap-2">
+          <span className="rounded-full bg-secondary px-2 py-0.5 font-medium text-secondary-foreground">
+            {CATEGORY_LABEL[post.category] ?? "Other"}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+          </span>
         </span>
         {verified && (
           <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">
