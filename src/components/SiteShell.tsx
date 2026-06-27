@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, LogOut, UserCircle2 } from "lucide-react";
+import { ShieldCheck, LogOut, UserCircle2, Moon, Sun } from "lucide-react";
 import logo from "@/assets/mu-soe-logo.asset.json";
+import { useTheme } from "@/lib/theme";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const { user, profile, isAdmin, signOut } = useAuth();
+  const { theme, toggle } = useTheme();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -35,14 +37,22 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                   <UserCircle2 className="h-3.5 w-3.5" />
                   {profile?.usn ?? "no USN"}
                 </span>
+                <Button size="sm" variant="ghost" onClick={toggle} aria-label="Toggle theme">
+                  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                </Button>
                 <Button size="sm" variant="ghost" onClick={signOut} aria-label="Sign out">
                   <LogOut className="h-4 w-4" />
                 </Button>
               </div>
             ) : (
-              <Link to="/auth" className="ml-2">
-                <Button size="sm">Sign in</Button>
-              </Link>
+              <>
+                <Button size="sm" variant="ghost" onClick={toggle} aria-label="Toggle theme">
+                  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                </Button>
+                <Link to="/auth" className="ml-2">
+                  <Button size="sm">Sign in</Button>
+                </Link>
+              </>
             )}
           </nav>
         </div>
