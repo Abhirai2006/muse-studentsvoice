@@ -151,6 +151,55 @@ export type Database = {
           },
         ]
       }
+      post_flags: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          post_id: string
+          reason: Database["public"]["Enums"]["flag_reason"]
+          reporter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          post_id: string
+          reason?: Database["public"]["Enums"]["flag_reason"]
+          reporter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          post_id?: string
+          reason?: Database["public"]["Enums"]["flag_reason"]
+          reporter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "post_tallies"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "public_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string
@@ -309,6 +358,36 @@ export type Database = {
       }
     }
     Views: {
+      post_flag_counts: {
+        Row: {
+          flag_count: number | null
+          last_flagged_at: string | null
+          post_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "post_tallies"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "public_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_tallies: {
         Row: {
           false_count: number | null
@@ -406,6 +485,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "student"
       escalation_status: "pending" | "sent" | "failed"
+      flag_reason: "spam" | "abuse" | "defamation" | "offtopic" | "other"
       post_category:
         | "hostel"
         | "mess"
@@ -550,6 +630,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "student"],
       escalation_status: ["pending", "sent", "failed"],
+      flag_reason: ["spam", "abuse", "defamation", "offtopic", "other"],
       post_category: [
         "hostel",
         "mess",
