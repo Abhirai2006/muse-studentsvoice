@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, LogOut, UserCircle2, Moon, Sun } from "lucide-react";
+import { ShieldCheck, LogOut, UserCircle2, Moon, Sun, Info } from "lucide-react";
 import logo from "@/assets/mu-soe-logo.asset.json";
 import { useTheme } from "@/lib/theme";
 
@@ -25,8 +25,14 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <Link to="/verified" className="rounded px-3 py-1.5 hover:bg-muted">
               <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Verified</span>
             </Link>
+            <Link to="/about" className="hidden rounded px-3 py-1.5 hover:bg-muted sm:inline-block">
+              <span className="inline-flex items-center gap-1"><Info className="h-3.5 w-3.5" /> About</span>
+            </Link>
             {user && profile && (
-              <Link to="/feed" className="rounded px-3 py-1.5 hover:bg-muted">Feed</Link>
+              <>
+                <Link to="/feed" className="rounded px-3 py-1.5 hover:bg-muted">Feed</Link>
+                <Link to="/my-complaints" className="hidden rounded px-3 py-1.5 hover:bg-muted sm:inline-block">Mine</Link>
+              </>
             )}
             {isAdmin && (
               <Link to="/admin" className="rounded px-3 py-1.5 hover:bg-muted">Admin</Link>
@@ -58,8 +64,20 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">{children}</main>
-      <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
-        Identities are kept hidden. Verified complaints are mailed to the Director &amp; VC.
+      <footer className="mt-12 border-t border-border bg-card/40">
+        <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            Student Voice · MU School of Engineering. A peer-moderated record of
+            student grievances. Identities are pseudonymous — see{" "}
+            <Link to="/privacy" className="underline hover:text-foreground">Privacy &amp; Anonymity</Link>.
+          </p>
+          <nav className="flex flex-wrap gap-x-4 gap-y-1">
+            <Link to="/about" className="hover:text-foreground">About</Link>
+            <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+            <Link to="/terms" className="hover:text-foreground">Terms</Link>
+            <a href="mailto:bestofsnips431@gmail.com" className="hover:text-foreground">Contact</a>
+          </nav>
+        </div>
       </footer>
     </div>
   );

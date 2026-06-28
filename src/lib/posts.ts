@@ -91,3 +91,27 @@ export async function clearVote(postId: string, userId: string) {
   const { error } = await supabase.from("votes").delete().eq("post_id", postId).eq("voter_id", userId);
   if (error) throw error;
 }
+
+// Quorum + threshold mirror the values stored in `public.config`.
+// Keep these in sync with that table; they are used for UI hints only.
+export const QUORUM = 30;
+export const THRESHOLD_PCT = 70;
+
+export type FlagReason = "spam" | "abuse" | "defamation" | "offtopic" | "other";
+
+export async function flagPost(postId: string, userId: string, reason: FlagReason, note?: string) {
+  const { error } = await supabase
+    .from("post_flags")
+    .insert({ post_id: postId, reporter_id: userId, reason, note: note ?? null });
+  if (error) throw error;
+}
+
+export async function fetchMyFlag(postId: string, userId: string) {
+  const { data } = await supabase
+    .from("post_flags")
+    .select("id")
+    .eq("post_id", postId)
+    .eq("reporter_id", userId)
+    .maybeSingle();
+  return !!data;
+}
