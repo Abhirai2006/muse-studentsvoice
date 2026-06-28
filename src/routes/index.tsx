@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/SiteShell";
 import { PostCard } from "@/components/PostCard";
+import { PostCardSkeletonList } from "@/components/PostCardSkeleton";
 import { fetchPublicPosts } from "@/lib/posts";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
@@ -11,9 +12,10 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Student Voice — anonymous college complaints" },
-      { name: "description", content: "Public, read-only feed of student complaints. Verified by peers, escalated to college leadership." },
+      { name: "description", content: "Public, read-only feed of student complaints from MU School of Engineering. Peer-verified, escalated to the Director & VC." },
       { property: "og:title", content: "Student Voice — anonymous college complaints" },
-      { property: "og:description", content: "Public, read-only feed of student complaints. Verified by peers, escalated to college leadership." },
+      { property: "og:description", content: "Browse the latest complaints from MU SoE students. Trending verified issues this week and a public record of what's been escalated." },
+      { name: "twitter:description", content: "Browse the latest complaints from MU SoE students. Trending verified issues this week and a public record of what's been escalated." },
     ],
   }),
   component: Index,
@@ -21,7 +23,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { user, profile } = useAuth();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["public_posts"],
     queryFn: () => fetchPublicPosts(),
   });
@@ -86,11 +88,21 @@ function Index() {
         Latest complaints
       </h2>
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <PostCardSkeletonList count={4} />
+      ) : isError ? (
+        <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-6 text-center text-sm">
+          <p>Something went wrong loading complaints.</p>
+          <Button size="sm" variant="outline" className="mt-3" onClick={() => refetch()} disabled={isFetching}>
+            {isFetching ? "Retrying…" : "Try again"}
+          </Button>
+        </div>
       ) : !data || data.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          No complaints posted yet. Be the first — sign in with your USN.
-        </p>
+        <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          <p>No complaints yet. Be the first to raise one.</p>
+          <Link to={user && profile ? "/feed" : "/auth"} className="mt-3 inline-block">
+            <Button size="sm">{user && profile ? "Post a complaint" : "Sign in with your USN"}</Button>
+          </Link>
+        </div>
       ) : (
         <div className="space-y-3">
           {data.map((p) => <PostCard key={p.id} post={p} compact />)}
