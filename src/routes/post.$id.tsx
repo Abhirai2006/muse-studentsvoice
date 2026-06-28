@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
-import { ShieldCheck, ThumbsUp, ThumbsDown, Clock, Trash2, Pencil } from "lucide-react";
+import { ShieldCheck, ThumbsUp, ThumbsDown, Clock, Trash2, Pencil, Flag } from "lucide-react";
 import { SiteShell } from "@/components/SiteShell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,10 @@ import {
   fetchMyVote,
   castVote,
   clearVote,
+  flagPost,
+  fetchMyFlag,
+  QUORUM,
+  THRESHOLD_PCT,
 } from "@/lib/posts";
 
 export const Route = createFileRoute("/post/$id")({
@@ -52,6 +56,11 @@ function PostDetailPage() {
     },
     enabled: !!user,
   });
+  const myFlag = useQuery({
+    queryKey: ["myflag", id, user?.id],
+    queryFn: () => fetchMyFlag(id, user!.id),
+    enabled: !!user,
+  });
 
   const [comment, setComment] = useState("");
   const [editing, setEditing] = useState(false);
@@ -63,6 +72,8 @@ function PostDetailPage() {
   const p = post.data;
   const total = p.true_count + p.false_count;
   const truePct = total > 0 ? Math.round((p.true_count / total) * 100) : 0;
+  const falsePct = total > 0 ? 100 - truePct : 0;
+  const needed = Math.max(0, QUORUM - total);
   const locked = p.status === "verified_true";
 
   async function vote(value: boolean) {
@@ -111,6 +122,23 @@ function PostDetailPage() {
     setEditing(false);
     qc.invalidateQueries({ queryKey: ["post", id] });
     qc.invalidateQueries({ queryKey: ["public_posts"] });
+  }
+
+  async function reportPost() {
+    if (!user || !profile) { toast.error("Sign in to flag a post."); return; }
+    const reason = window.prompt(
+      "Why are you flagging this? (spam / abuse / defamation / offtopic / other)",
+      "spam",
+    );
+    if (!reason) return;
+    const r = reason.trim().toLowerCase();
+    const allowed = ["spam", "abuse", "defamation", "offtopic", "other"];
+    if (!allowed.includes(r)) { toast.error("Use one of: spam, abuse, defamation, offtopic, other."); return; }
+    try {
+      await flagPost(id, user.id, r as never);
+      toast.success("Reported. An admin will review.");
+      qc.invalidateQueries({ queryKey: ["myflag", id, user.id] });
+    } catch (e) { toast.error((e as Error).message); }
   }
 
   return (
@@ -169,8 +197,44 @@ function PostDetailPage() {
           >
             <ThumbsDown className="mr-1 h-3.5 w-3.5" /> False ({p.false_count})
           </Button>
-          {total > 0 && (
-            <span className="text-xs text-muted-foreground">{truePct}% true · {total} votes</span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={reportPost}
+            disabled={!user || !profile || myFlag.data}
+            title={myFlag.data ? "You already reported this" : "Report this post"}
+            className="ml-auto"
+          >
+            <Flag className="mr-1 h-3.5 w-3.5" />
+            {myFlag.data ? "Reported" : "Report"}
+          </Button>
+        </div>
+
+        <div className="mt-4 rounded-md border border-border/60 bg-muted/30 p-3 text-xs">
+          {total === 0 ? (
+            <p className="text-muted-foreground">
+              No votes yet. Quorum is <strong>{QUORUM} votes</strong>; a post is verified at ≥{THRESHOLD_PCT}% true and removed at ≥{THRESHOLD_PCT}% false.
+            </p>
+          ) : (
+            <>
+              <div className="mb-1 flex justify-between font-medium">
+                <span>{truePct}% true · {p.true_count}</span>
+                <span>{falsePct}% false · {p.false_count}</span>
+              </div>
+              <div className="flex h-1.5 overflow-hidden rounded-full bg-border">
+                <div className="bg-primary" style={{ width: `${truePct}%` }} />
+                <div className="bg-destructive" style={{ width: `${falsePct}%` }} />
+              </div>
+              <p className="mt-2 text-muted-foreground">
+                {locked
+                  ? "Verified and escalated."
+                  : p.status === "deleted_false"
+                    ? "Community marked this false."
+                    : needed > 0
+                      ? <>Needs <strong>{needed}</strong> more vote{needed === 1 ? "" : "s"} to reach the {QUORUM}-vote quorum.</>
+                      : <>Quorum reached. Will resolve at ≥{THRESHOLD_PCT}% on either side.</>}
+              </p>
+            </>
           )}
         </div>
       </article>

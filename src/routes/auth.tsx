@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -136,7 +137,11 @@ function AuthPage() {
       <SiteShell>
         <div className="mx-auto max-w-sm rounded-xl border border-border bg-card p-6">
           <h1 className="font-serif text-xl font-semibold">One last step</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Link your USN to this account. This can't be changed later.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Even with Google sign-in we still link one USN per account so duplicate posts and votes can be prevented.
+            This can't be changed later. See{" "}
+            <Link to="/privacy" className="underline">Privacy &amp; Anonymity</Link>.
+          </p>
           <form onSubmit={handleClaim} className="mt-4 space-y-3">
             <div>
               <Label htmlFor="usn">USN</Label>
@@ -156,12 +161,16 @@ function AuthPage() {
           {mode === "signup" ? "Create your account" : "Sign in"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          One account per USN. Your identity is never shown publicly.
+          One account per USN. Your USN is never shown on posts, votes, or in the letter sent to leadership.
         </p>
         <form onSubmit={mode === "signup" ? handleSignup : handleSignin} className="mt-4 space-y-3">
           <div>
             <Label htmlFor="usn">USN</Label>
             <Input id="usn" value={usn} onChange={(e) => setUsn(e.target.value)} placeholder="24SEAI001" required={mode === "signup"} />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              We use your USN only to enforce one account per student.{" "}
+              <Link to="/privacy" className="underline">How your USN is stored &amp; protected</Link>.
+            </p>
           </div>
           <div>
             <Label htmlFor="email">Email</Label>
