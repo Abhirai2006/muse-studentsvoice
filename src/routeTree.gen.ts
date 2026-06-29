@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifiedRouteImport } from './routes/verified'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MyComplaintsRouteImport } from './routes/my-complaints'
 import { Route as FeedRouteImport } from './routes/feed'
@@ -28,6 +29,11 @@ const VerifiedRoute = VerifiedRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/feed': typeof FeedRoute
   '/my-complaints': typeof MyComplaintsRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verified': typeof VerifiedRoute
   '/post/$id': typeof PostIdRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/feed': typeof FeedRoute
   '/my-complaints': typeof MyComplaintsRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verified': typeof VerifiedRoute
   '/post/$id': typeof PostIdRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/feed': typeof FeedRoute
   '/my-complaints': typeof MyComplaintsRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verified': typeof VerifiedRoute
   '/post/$id': typeof PostIdRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/feed'
     | '/my-complaints'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/verified'
     | '/post/$id'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/feed'
     | '/my-complaints'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/verified'
     | '/post/$id'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/feed'
     | '/my-complaints'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/verified'
     | '/post/$id'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   FeedRoute: typeof FeedRoute
   MyComplaintsRoute: typeof MyComplaintsRoute
   PrivacyRoute: typeof PrivacyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   VerifiedRoute: typeof VerifiedRoute
   PostIdRoute: typeof PostIdRoute
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   FeedRoute: FeedRoute,
   MyComplaintsRoute: MyComplaintsRoute,
   PrivacyRoute: PrivacyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   VerifiedRoute: VerifiedRoute,
   PostIdRoute: PostIdRoute,
