@@ -4,11 +4,15 @@ import { SiteShell } from "@/components/SiteShell";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Use — Student Voice" },
-      { name: "description", content: "Acceptable use of the Student Voice platform." },
-      { property: "og:description", content: "Acceptable use rules for posting, voting, commenting and flagging on Student Voice." },
-      { name: "twitter:description", content: "Acceptable use rules for posting, voting, commenting and flagging on Student Voice." },
+      { title: "Terms of Use — MUSE Student Voice" },
+      { name: "description", content: "Acceptable-use rules for MUSE Student Voice: who can post, what is not allowed, how moderation works, and what is not guaranteed." },
+      { property: "og:title", content: "Terms of Use — MUSE Student Voice" },
+      { property: "og:description", content: "House rules for MUSE Student Voice: posting limits, prohibited content, moderation, and admin escalation policy." },
+      { name: "twitter:title", content: "Terms of Use — MUSE Student Voice" },
+      { name: "twitter:description", content: "House rules for MUSE Student Voice: posting limits, prohibited content, moderation, and admin escalation policy." },
+      { property: "og:url", content: "https://muse-studentsvoice.lovable.app/terms" },
     ],
+    links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/terms" }],
   }),
   component: Terms,
 });
@@ -18,12 +22,13 @@ function Terms() {
     <SiteShell>
       <article className="prose prose-sm dark:prose-invert max-w-none">
         <h1 className="font-serif text-2xl font-semibold">Terms of Use</h1>
-        <p className="text-sm text-muted-foreground">Placeholder draft — to be refined.</p>
+        <p className="text-sm text-muted-foreground">Last updated June 2026.</p>
 
         <h2 className="mt-6 text-base font-semibold">Who can use this</h2>
         <p className="text-sm">
-          Student Voice is open to students of Maharaja Institute, MU School of
-          Engineering with a USN on the registry. One account per USN.
+          MUSE Student Voice is open to students of <strong>Mysore University
+          School of Engineering (MUSE)</strong> whose USN is on the registry.
+          One account per USN.
         </p>
 
         <h2 className="mt-6 text-base font-semibold">What you must not post</h2>
