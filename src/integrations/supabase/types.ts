@@ -207,6 +207,8 @@ export type Database = {
           category: Database["public"]["Enums"]["post_category"]
           created_at: string
           id: string
+          issue_type: string
+          location: string
           resolved_at: string | null
           status: Database["public"]["Enums"]["post_status"]
           updated_at: string
@@ -217,6 +219,8 @@ export type Database = {
           category?: Database["public"]["Enums"]["post_category"]
           created_at?: string
           id?: string
+          issue_type?: string
+          location?: string
           resolved_at?: string | null
           status?: Database["public"]["Enums"]["post_status"]
           updated_at?: string
@@ -227,6 +231,8 @@ export type Database = {
           category?: Database["public"]["Enums"]["post_category"]
           created_at?: string
           id?: string
+          issue_type?: string
+          location?: string
           resolved_at?: string | null
           status?: Database["public"]["Enums"]["post_status"]
           updated_at?: string
@@ -456,6 +462,8 @@ export type Database = {
           created_at: string | null
           false_count: number | null
           id: string | null
+          issue_type: string | null
+          location: string | null
           resolved_at: string | null
           status: Database["public"]["Enums"]["post_status"] | null
           true_count: number | null
