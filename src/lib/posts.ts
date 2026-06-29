@@ -23,10 +23,63 @@ export const CATEGORY_LABEL: Record<PostCategory, string> = {
   other: "Other",
 };
 
+// --- New two-part categorization (location + issue type) ---
+export const LOCATIONS = [
+  "physics_lab",
+  "bio_rob_lab",
+  "library",
+  "math_lab",
+  "comp_lab",
+  "chem_lab",
+  "year1_block",
+  "year2_block",
+  "year3_block",
+  "admin_dept",
+  "garden_grounds",
+  "other",
+] as const;
+export type Location = (typeof LOCATIONS)[number];
+export const LOCATION_LABEL: Record<Location, string> = {
+  physics_lab: "Physics lab",
+  bio_rob_lab: "Bio & Robotics lab",
+  library: "Library",
+  math_lab: "Math lab",
+  comp_lab: "Computer lab",
+  chem_lab: "Chemistry lab",
+  year1_block: "I year block",
+  year2_block: "II year block",
+  year3_block: "III year block",
+  admin_dept: "Administrative dept",
+  garden_grounds: "Garden / grounds",
+  other: "Other",
+};
+
+export const ISSUE_TYPES = [
+  "infrastructure",
+  "cleanliness",
+  "faculty_conduct",
+  "safety",
+  "academic",
+  "administrative",
+  "other",
+] as const;
+export type IssueType = (typeof ISSUE_TYPES)[number];
+export const ISSUE_LABEL: Record<IssueType, string> = {
+  infrastructure: "Infrastructure",
+  cleanliness: "Cleanliness / maintenance",
+  faculty_conduct: "Faculty / staff conduct",
+  safety: "Safety",
+  academic: "Academic / curriculum",
+  administrative: "Administrative / fees",
+  other: "Other",
+};
+
 export type PublicPost = {
   id: string;
   body: string;
   category: PostCategory;
+  location: Location;
+  issue_type: IssueType;
   status: "open" | "verified_true" | "deleted_false" | "removed_by_author";
   created_at: string;
   updated_at: string;

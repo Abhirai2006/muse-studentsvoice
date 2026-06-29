@@ -33,7 +33,7 @@ export function SplashScreen({ onDone }: { onDone?: () => void }) {
         <div className="animate-[fadeUp_700ms_ease-out_both]">
           <img
             src={logo.url}
-            alt="Mysore University School of Engineering"
+            alt="MUSE — Mysore University School of Engineering"
             className="h-28 w-28 rounded-2xl object-contain shadow-xl ring-1 ring-border bg-card p-2"
           />
         </div>
@@ -41,7 +41,7 @@ export function SplashScreen({ onDone }: { onDone?: () => void }) {
           Student Voice
         </h1>
         <p className="mt-1 text-sm text-muted-foreground animate-[fadeUp_1100ms_ease-out_both]">
-          Mysore University School of Engineering
+          MUSE · Mysore University School of Engineering
         </p>
         <div className="mt-6 flex items-center gap-1.5 animate-[fadeUp_1300ms_ease-out_both]">
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary [animation-delay:-0.3s]" />
