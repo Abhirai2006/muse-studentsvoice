@@ -11,12 +11,15 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Student Voice — anonymous college complaints" },
-      { name: "description", content: "Public, read-only feed of student complaints from MU School of Engineering. Peer-verified, escalated to the Director & VC." },
-      { property: "og:title", content: "Student Voice — anonymous college complaints" },
-      { property: "og:description", content: "Browse the latest complaints from MU SoE students. Trending verified issues this week and a public record of what's been escalated." },
-      { name: "twitter:description", content: "Browse the latest complaints from MU SoE students. Trending verified issues this week and a public record of what's been escalated." },
+      { title: "Student Voice — MUSE student complaints board" },
+      { name: "description", content: "Public, anonymous board of student complaints from MUSE (Mysore University School of Engineering). Peer-verified issues are escalated to the Director and VC." },
+      { property: "og:title", content: "Student Voice — MUSE student complaints board" },
+      { property: "og:description", content: "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership." },
+      { name: "twitter:title", content: "Student Voice — MUSE student complaints board" },
+      { name: "twitter:description", content: "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership." },
+      { property: "og:url", content: "https://muse-studentsvoice.lovable.app/" },
     ],
+    links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/" }],
   }),
   component: Index,
 });

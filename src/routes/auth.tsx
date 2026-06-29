@@ -14,8 +14,13 @@ import { Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in or sign up — Student Voice" },
-      { name: "description", content: "Sign in with your USN. One account per USN." },
+      { title: "Sign in — MUSE Student Voice" },
+      { name: "description", content: "Sign in or create an account on MUSE Student Voice using your Mysore University School of Engineering USN. One account per USN, enforced." },
+      { property: "og:title", content: "Sign in — MUSE Student Voice" },
+      { property: "og:description", content: "Use your MUSE USN to sign in. One USN per student, no public name shown on any post or vote." },
+      { name: "twitter:title", content: "Sign in — MUSE Student Voice" },
+      { name: "twitter:description", content: "Use your MUSE USN to sign in. One USN per student, no public name shown on any post or vote." },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: AuthPage,

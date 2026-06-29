@@ -5,17 +5,20 @@ import { Button } from "@/components/ui/button";
 import { PostCardSkeletonList } from "@/components/PostCardSkeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { CATEGORY_LABEL, type PostCategory } from "@/lib/posts";
+import { LOCATION_LABEL, ISSUE_LABEL, type Location, type IssueType } from "@/lib/posts";
 import { formatDistanceToNow } from "date-fns";
 import { ShieldCheck, Clock, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/my-complaints")({
   head: () => ({
     meta: [
-      { title: "My complaints — Student Voice" },
-      { name: "description", content: "Complaints you have submitted and their current status." },
-      { property: "og:description", content: "Track the status of your submitted complaints — pending, verified, or auto-removed — with live vote counts." },
-      { name: "twitter:description", content: "Track the status of your submitted complaints — pending, verified, or auto-removed — with live vote counts." },
+      { title: "My complaints — MUSE Student Voice" },
+      { name: "description", content: "Private dashboard of complaints you submitted on MUSE Student Voice with current status (open, verified, removed) and live peer vote counts." },
+      { property: "og:title", content: "My complaints — MUSE Student Voice" },
+      { property: "og:description", content: "Track every complaint you posted on MUSE Student Voice — status, vote tallies, and comment activity in one place." },
+      { name: "twitter:title", content: "My complaints — MUSE Student Voice" },
+      { name: "twitter:description", content: "Track every complaint you posted on MUSE Student Voice — status, vote tallies, and comment activity in one place." },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: MyComplaints,
@@ -37,7 +40,7 @@ function MyComplaints() {
     queryFn: async () => {
       const { data: posts, error } = await supabase
         .from("posts")
-        .select("id, body, category, status, created_at, resolved_at")
+        .select("id, body, location, issue_type, status, created_at, resolved_at")
         .eq("author_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -97,9 +100,12 @@ function MyComplaints() {
             return (
               <li key={p.id} className="rounded-lg border border-border bg-card p-4">
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-2">
+                  <span className="inline-flex flex-wrap items-center gap-1.5">
                     <span className="rounded-full bg-secondary px-2 py-0.5 font-medium text-secondary-foreground">
-                      {CATEGORY_LABEL[(p.category as PostCategory) ?? "other"] ?? "Other"}
+                      {LOCATION_LABEL[((p as unknown as { location?: Location }).location ?? "other") as Location] ?? "Other"}
+                    </span>
+                    <span className="rounded-full bg-accent px-2 py-0.5 font-medium text-accent-foreground">
+                      {ISSUE_LABEL[((p as unknown as { issue_type?: IssueType }).issue_type ?? "other") as IssueType] ?? "Other"}
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" />

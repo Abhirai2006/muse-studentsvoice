@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ShieldCheck, ThumbsUp, ThumbsDown, MessageCircle, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { PublicPost } from "@/lib/posts";
-import { CATEGORY_LABEL } from "@/lib/posts";
+import { LOCATION_LABEL, ISSUE_LABEL, type Location, type IssueType } from "@/lib/posts";
 
 export function PostCard({ post, compact }: { post: PublicPost; compact?: boolean }) {
   const total = post.true_count + post.false_count;
@@ -15,10 +15,13 @@ export function PostCard({ post, compact }: { post: PublicPost; compact?: boolea
       params={{ id: post.id }}
       className="block rounded-lg border border-border bg-card p-4 shadow-sm transition hover:border-primary/40 hover:shadow"
     >
-      <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-2">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+        <span className="inline-flex flex-wrap items-center gap-1.5">
           <span className="rounded-full bg-secondary px-2 py-0.5 font-medium text-secondary-foreground">
-            {CATEGORY_LABEL[post.category] ?? "Other"}
+            {LOCATION_LABEL[(post.location ?? "other") as Location] ?? "Other"}
+          </span>
+          <span className="rounded-full bg-accent px-2 py-0.5 font-medium text-accent-foreground">
+            {ISSUE_LABEL[(post.issue_type ?? "other") as IssueType] ?? "Other"}
           </span>
           <span className="inline-flex items-center gap-1">
             <Clock className="h-3 w-3" />

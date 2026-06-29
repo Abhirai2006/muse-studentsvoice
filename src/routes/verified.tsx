@@ -9,11 +9,15 @@ import { fetchPublicPosts } from "@/lib/posts";
 export const Route = createFileRoute("/verified")({
   head: () => ({
     meta: [
-      { title: "Verified complaints — Student Voice" },
-      { name: "description", content: "Complaints the community has verified as true. These are archived forever and mailed to college leadership." },
-      { property: "og:description", content: "A permanent, anonymous record of complaints the MU SoE student community has marked credible and forwarded to the Director & VC." },
-      { name: "twitter:description", content: "A permanent, anonymous record of complaints the MU SoE student community has marked credible and forwarded to the Director & VC." },
+      { title: "Verified complaints — MUSE Student Voice" },
+      { name: "description", content: "Permanent archive of MUSE student complaints verified true by ≥70% of peer voters and escalated by email to the Director and Vice-Chancellor." },
+      { property: "og:title", content: "Verified complaints — MUSE Student Voice" },
+      { property: "og:description", content: "Permanent record of MUSE student complaints peer-verified as credible and forwarded to the Director and VC of Mysore University." },
+      { name: "twitter:title", content: "Verified complaints — MUSE Student Voice" },
+      { name: "twitter:description", content: "Permanent record of MUSE student complaints peer-verified as credible and forwarded to the Director and VC of Mysore University." },
+      { property: "og:url", content: "https://muse-studentsvoice.lovable.app/verified" },
     ],
+    links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/verified" }],
   }),
   component: VerifiedPage,
 });

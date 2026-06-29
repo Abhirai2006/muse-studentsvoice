@@ -19,13 +19,20 @@ import {
   fetchMyFlag,
   QUORUM,
   THRESHOLD_PCT,
+  LOCATION_LABEL,
+  ISSUE_LABEL,
+  type Location,
+  type IssueType,
 } from "@/lib/posts";
 
 export const Route = createFileRoute("/post/$id")({
   head: ({ params }) => ({
     meta: [
-      { title: `Complaint #${params.id.slice(0, 6)} — Student Voice` },
-      { name: "description", content: "Anonymous student complaint, with peer voting and discussion." },
+      { title: `Complaint #${params.id.slice(0, 6)} — MUSE Student Voice` },
+      { name: "description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
+      { property: "og:title", content: `Complaint #${params.id.slice(0, 6)} — MUSE Student Voice` },
+      { property: "og:description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
+      { name: "twitter:description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
     ],
   }),
   component: PostDetailPage,
@@ -156,6 +163,14 @@ function PostDetailPage() {
               <ShieldCheck className="h-3 w-3" /> Verified true — escalated
             </span>
           )}
+        </div>
+        <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
+          <span className="rounded-full bg-secondary px-2 py-0.5 font-medium text-secondary-foreground">
+            {LOCATION_LABEL[(p.location ?? "other") as Location] ?? "Other"}
+          </span>
+          <span className="rounded-full bg-accent px-2 py-0.5 font-medium text-accent-foreground">
+            {ISSUE_LABEL[(p.issue_type ?? "other") as IssueType] ?? "Other"}
+          </span>
         </div>
         {editing ? (
           <div className="space-y-2">

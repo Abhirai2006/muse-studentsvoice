@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /feed
+Disallow: /my-complaints
+Disallow: /admin
+Disallow: /auth
+
+Sitemap: https://muse-studentsvoice.lovable.app/sitemap.xml

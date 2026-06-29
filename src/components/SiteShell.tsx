@@ -10,14 +10,14 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const { theme, toggle } = useTheme();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="border-b border-border bg-card/60 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
           <Link to="/" className="flex items-center gap-2 font-serif text-lg font-semibold text-primary">
-            <img src={logo.url} alt="MU SoE" className="h-8 w-8 rounded-md object-contain ring-1 ring-border bg-card" />
+            <img src={logo.url} alt="MUSE" className="h-8 w-8 rounded-md object-contain ring-1 ring-border bg-card" />
             <span className="leading-tight">
               Student Voice
-              <span className="block text-[10px] font-sans font-normal uppercase tracking-wider text-muted-foreground">MU School of Engineering</span>
+              <span className="block text-[10px] font-sans font-normal uppercase tracking-wider text-muted-foreground">MUSE · Mysore University School of Engineering</span>
             </span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
@@ -63,11 +63,11 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-3xl px-4 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">{children}</main>
       <footer className="mt-12 border-t border-border bg-card/40">
         <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            Student Voice · MU School of Engineering. A peer-moderated record of
+            Student Voice · MUSE (Mysore University School of Engineering). A peer-moderated record of
             student grievances. Identities are pseudonymous — see{" "}
             <Link to="/privacy" className="underline hover:text-foreground">Privacy &amp; Anonymity</Link>.
           </p>

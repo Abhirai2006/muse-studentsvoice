@@ -5,11 +5,15 @@ import { QUORUM, THRESHOLD_PCT } from "@/lib/posts";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "How it works — Student Voice" },
-      { name: "description", content: "How posting, voting, verification, and escalation work on Student Voice." },
-      { property: "og:description", content: "Step-by-step: how complaints are posted, peer-voted, verified, and escalated to MU SoE leadership." },
-      { name: "twitter:description", content: "Step-by-step: how complaints are posted, peer-voted, verified, and escalated to MU SoE leadership." },
+      { title: "How it works — MUSE Student Voice" },
+      { name: "description", content: "Step-by-step guide to MUSE Student Voice: posting with USN, peer voting, the 30-vote quorum, the 70% threshold, and escalation to Director and VC." },
+      { property: "og:title", content: "How it works — MUSE Student Voice" },
+      { property: "og:description", content: "How complaints at Mysore University School of Engineering get posted, peer-voted, verified at 70% credibility, and escalated to college leadership." },
+      { name: "twitter:title", content: "How it works — MUSE Student Voice" },
+      { name: "twitter:description", content: "How complaints at Mysore University School of Engineering get posted, peer-voted, verified at 70% credibility, and escalated to college leadership." },
+      { property: "og:url", content: "https://muse-studentsvoice.lovable.app/about" },
     ],
+    links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/about" }],
   }),
   component: About,
 });
@@ -20,14 +24,18 @@ function About() {
       <article className="prose prose-sm dark:prose-invert max-w-none">
         <h1 className="font-serif text-2xl font-semibold">How Student Voice works</h1>
         <p className="text-sm text-muted-foreground">
-          A peer-moderated record of student grievances at MU School of Engineering.
+          A peer-moderated record of student grievances at MUSE — Mysore University School of Engineering.
         </p>
 
         <h2 className="mt-6 text-base font-semibold">1. Posting</h2>
         <p className="text-sm">
           You must sign in with a registered USN to post. One account per USN; one
-          USN per student. You can post up to 3 complaints per day, picking a
-          category so issues are easy to find.
+          USN per student. You can post up to 3 complaints per day. Each complaint
+          must be tagged with both a <strong>Location</strong> (where it happened —
+          a specific lab, year block, library, admin dept, garden, etc.) and an
+          <strong> Issue type</strong> (infrastructure, cleanliness, faculty conduct,
+          safety, academic, administrative, or other) so issues are easy to filter
+          and trends are visible.
         </p>
 
         <h2 className="mt-6 text-base font-semibold">2. Voting</h2>

@@ -10,13 +10,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchPublicPosts, POST_CATEGORIES, CATEGORY_LABEL, type PostCategory } from "@/lib/posts";
+import {
+  fetchPublicPosts,
+  LOCATIONS, LOCATION_LABEL, type Location,
+  ISSUE_TYPES, ISSUE_LABEL, type IssueType,
+} from "@/lib/posts";
 
 export const Route = createFileRoute("/feed")({
   head: () => ({
     meta: [
-      { title: "Feed — Student Voice" },
-      { name: "description", content: "Post a complaint or vote on others." },
+      { title: "Complaint feed — MUSE Student Voice" },
+      { name: "description", content: "Post a new complaint or vote on others. Signed-in feed for verified MUSE students with filters by location and issue type." },
+      { property: "og:title", content: "Complaint feed — MUSE Student Voice" },
+      { property: "og:description", content: "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type." },
+      { name: "twitter:title", content: "Complaint feed — MUSE Student Voice" },
+      { name: "twitter:description", content: "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type." },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: FeedPage,
@@ -28,11 +37,13 @@ function FeedPage() {
   const { user, profile, loading } = useAuth();
   const qc = useQueryClient();
   const [body, setBody] = useState("");
-  const [category, setCategory] = useState<PostCategory>("other");
+  const [location, setLocation] = useState<Location | "">("");
+  const [issueType, setIssueType] = useState<IssueType | "">("");
   const [busy, setBusy] = useState(false);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"newest" | "most_voted" | "trending">("newest");
-  const [filterCat, setFilterCat] = useState<PostCategory | "all">("all");
+  const [filterLoc, setFilterLoc] = useState<Location | "all">("all");
+  const [filterIssue, setFilterIssue] = useState<IssueType | "all">("all");
 
   const { data, isLoading } = useQuery({
     queryKey: ["public_posts"],
@@ -64,12 +75,18 @@ function FeedPage() {
   async function submit() {
     const parsed = bodySchema.safeParse(body);
     if (!parsed.success) { toast.error(parsed.error.errors[0].message); return; }
+    if (!location) { toast.error("Pick a location."); return; }
+    if (!issueType) { toast.error("Pick an issue type."); return; }
     if (!user) return;
     setBusy(true);
-    const { error } = await supabase.from("posts").insert({ author_id: user.id, body: parsed.data, category });
+    const { error } = await supabase
+      .from("posts")
+      .insert({ author_id: user.id, body: parsed.data, location, issue_type: issueType, category: "other" });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     setBody("");
+    setLocation("");
+    setIssueType("");
     toast.success("Complaint posted.");
     qc.invalidateQueries({ queryKey: ["public_posts"] });
   }
@@ -81,17 +98,33 @@ function FeedPage() {
         <p className="mt-1 text-xs text-muted-foreground">
           Posting as <span className="font-mono">{profile?.usn}</span> — your USN is never shown to other users.
         </p>
-        <div className="mt-3">
-          <label className="text-xs font-medium text-muted-foreground">Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value as PostCategory)}
-            className="mt-1 h-9 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-60"
-          >
-            {POST_CATEGORIES.map((c) => (
-              <option key={c} value={c}>{CATEGORY_LABEL[c]}</option>
-            ))}
-          </select>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div>
+            <label className="text-xs font-medium text-muted-foreground">Location *</label>
+            <select
+              value={location}
+              onChange={(e) => setLocation(e.target.value as Location)}
+              className="mt-1 h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+            >
+              <option value="">Select location…</option>
+              {LOCATIONS.map((l) => (
+                <option key={l} value={l}>{LOCATION_LABEL[l]}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-medium text-muted-foreground">Issue type *</label>
+            <select
+              value={issueType}
+              onChange={(e) => setIssueType(e.target.value as IssueType)}
+              className="mt-1 h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+            >
+              <option value="">Select issue type…</option>
+              {ISSUE_TYPES.map((i) => (
+                <option key={i} value={i}>{ISSUE_LABEL[i]}</option>
+              ))}
+            </select>
+          </div>
         </div>
         <Textarea
           value={body}
@@ -113,15 +146,28 @@ function FeedPage() {
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Find by keyword…" />
         </div>
         <div>
-          <label className="text-xs font-medium text-muted-foreground">Category</label>
+          <label className="text-xs font-medium text-muted-foreground">Location</label>
           <select
-            value={filterCat}
-            onChange={(e) => setFilterCat(e.target.value as PostCategory | "all")}
+            value={filterLoc}
+            onChange={(e) => setFilterLoc(e.target.value as Location | "all")}
             className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-44"
           >
-            <option value="all">All</option>
-            {POST_CATEGORIES.map((c) => (
-              <option key={c} value={c}>{CATEGORY_LABEL[c]}</option>
+            <option value="all">All locations</option>
+            {LOCATIONS.map((l) => (
+              <option key={l} value={l}>{LOCATION_LABEL[l]}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">Issue type</label>
+          <select
+            value={filterIssue}
+            onChange={(e) => setFilterIssue(e.target.value as IssueType | "all")}
+            className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-44"
+          >
+            <option value="all">All issues</option>
+            {ISSUE_TYPES.map((i) => (
+              <option key={i} value={i}>{ISSUE_LABEL[i]}</option>
             ))}
           </select>
         </div>
@@ -144,7 +190,8 @@ function FeedPage() {
       ) : (() => {
           const q = search.trim().toLowerCase();
           let list = (data ?? []).filter((p) =>
-            (filterCat === "all" || p.category === filterCat) &&
+            (filterLoc === "all" || p.location === filterLoc) &&
+            (filterIssue === "all" || p.issue_type === filterIssue) &&
             (q === "" || p.body.toLowerCase().includes(q)),
           );
           if (sort === "most_voted") {
