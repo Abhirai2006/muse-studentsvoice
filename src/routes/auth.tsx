@@ -35,11 +35,12 @@ const signupSchema = z.object({
 function AuthPage() {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signup");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signup");
   const [usn, setUsn] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
   // Already signed in + has profile → go to feed.
   useEffect(() => {
@@ -115,6 +116,22 @@ function AuthPage() {
     }
   }
 
+  async function handleForgot(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: window.location.origin + "/reset-password",
+      });
+      setForgotSent(true);
+    } catch {
+      // Show neutral confirmation regardless (no account enumeration).
+      setForgotSent(true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   // Signed in but no USN yet → just claim it.
   async function handleClaim(e: React.FormEvent) {
     e.preventDefault();
@@ -159,6 +176,50 @@ function AuthPage() {
     );
   }
 
+  if (mode === "forgot") {
+    return (
+      <SiteShell>
+        <div className="mx-auto max-w-sm rounded-xl border border-border bg-card p-6">
+          <h1 className="font-serif text-xl font-semibold">Reset your password</h1>
+          {forgotSent ? (
+            <>
+              <p className="mt-3 rounded-md border border-border bg-muted/40 p-3 text-sm">
+                If an account exists for that email, a reset link has been sent.
+              </p>
+              <button
+                className="mt-4 text-xs text-muted-foreground underline"
+                onClick={() => { setMode("signin"); setForgotSent(false); }}
+              >
+                Back to sign in
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="mt-1 text-sm text-muted-foreground">
+                We&apos;ll send a password reset link to this email.
+              </p>
+              <form onSubmit={handleForgot} className="mt-4 space-y-3">
+                <div>
+                  <Label htmlFor="fpemail">Email</Label>
+                  <Input id="fpemail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
+                </div>
+                <Button type="submit" disabled={busy} className="w-full">
+                  {busy ? "Sending…" : "Send reset link"}
+                </Button>
+              </form>
+              <button
+                className="mt-4 text-xs text-muted-foreground underline"
+                onClick={() => setMode("signin")}
+              >
+                Back to sign in
+              </button>
+            </>
+          )}
+        </div>
+      </SiteShell>
+    );
+  }
+
   return (
     <SiteShell>
       <div className="mx-auto max-w-sm rounded-xl border border-border bg-card p-6">
@@ -192,6 +253,17 @@ function AuthPage() {
               minLength={8}
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
             />
+            {mode === "signin" && (
+              <div className="mt-1 text-right">
+                <button
+                  type="button"
+                  className="text-xs text-muted-foreground underline hover:text-foreground"
+                  onClick={() => { setForgotSent(false); setMode("forgot"); }}
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
           </div>
           <Button type="submit" disabled={busy} className="w-full">
             {busy ? "Please wait…" : mode === "signup" ? "Create account" : "Sign in"}
