@@ -64,19 +64,43 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">{children}</main>
-      <footer className="mt-12 border-t border-border bg-card/40">
-        <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            Student Voice · MUSE (Mysore University School of Engineering). A peer-moderated record of
-            student grievances. Identities are pseudonymous — see{" "}
-            <Link to="/privacy" className="underline hover:text-foreground">Privacy &amp; Anonymity</Link>.
+      <footer className="mt-12 border-t border-border bg-card/60 text-muted-foreground">
+        <div className="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-2 md:grid-cols-4">
+          <div className="flex flex-col items-start gap-3">
+            <img src={logo.url} alt="MUSE" className="h-12 w-12 rounded-md object-contain ring-1 ring-border bg-card" />
+            <div className="font-serif text-base font-semibold text-foreground">Student Voice</div>
+            <p className="text-xs leading-relaxed">
+              MUSE · Mysore University<br />School of Engineering
+            </p>
+          </div>
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">Main Links</h3>
+            <ul className="space-y-2 text-sm">
+              <li><Link to="/" className="hover:text-foreground">Public</Link></li>
+              <li><Link to="/verified" className="hover:text-foreground">Verified</Link></li>
+              <li><Link to="/about" className="hover:text-foreground">About</Link></li>
+              <li><Link to="/feed" className="hover:text-foreground">Feed</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">Policies</h3>
+            <ul className="space-y-2 text-sm">
+              <li><Link to="/privacy" className="hover:text-foreground">Privacy &amp; Anonymity</Link></li>
+              <li><Link to="/terms" className="hover:text-foreground">Terms of Use</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">Contact</h3>
+            <ul className="space-y-2 text-sm">
+              <li><a href="mailto:bestofsnips431@gmail.com" className="hover:text-foreground break-all">bestofsnips431@gmail.com</a></li>
+              <li className="text-xs">Mysore, Karnataka 570006</li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-border">
+          <p className="mx-auto max-w-5xl px-4 py-4 text-center text-xs">
+            © {new Date().getFullYear()} MUSE Student Voice. A peer-moderated record of student grievances. All rights reserved.
           </p>
-          <nav className="flex flex-wrap gap-x-4 gap-y-1">
-            <Link to="/about" className="hover:text-foreground">About</Link>
-            <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
-            <Link to="/terms" className="hover:text-foreground">Terms</Link>
-            <a href="mailto:bestofsnips431@gmail.com" className="hover:text-foreground">Contact</a>
-          </nav>
         </div>
       </footer>
     </div>
