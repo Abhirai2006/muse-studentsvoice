@@ -27,10 +27,19 @@ export const Route = createFileRoute("/auth")({
 });
 
 const signupSchema = z.object({
-  usn: z.string().trim().regex(/^[0-9]{2}[A-Z]{3,4}[0-9]{3}$/, "USN must look like 24SEAI001"),
+  usn: z.string().trim().regex(/^[0-9]{2}SE(AI|AD|CD|BR|CV)[0-9]{3}$/, "Enter a valid USN, e.g. 24SEAI003."),
   email: z.string().trim().email().max(255),
   password: z.string().min(8, "At least 8 characters").max(72),
 });
+
+// Normalize user input: uppercase, trim, and zero-pad a 1- or 2-digit numeric
+// suffix to 3 digits so "23SEAD65" becomes "23SEAD065".
+function normalizeUSN(input: string): string {
+  const raw = input.toUpperCase().replace(/\s+/g, "");
+  const m = raw.match(/^([0-9]{2}SE(?:AI|AD|CD|BR|CV))([0-9]{1,3})$/);
+  if (!m) return raw;
+  return m[1] + m[2].padStart(3, "0");
+}
 
 function AuthPage() {
   const { user, profile, refreshProfile } = useAuth();
@@ -49,7 +58,8 @@ function AuthPage() {
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
-    const parsed = signupSchema.safeParse({ usn: usn.toUpperCase().trim(), email, password });
+    const normalizedUsn = normalizeUSN(usn);
+    const parsed = signupSchema.safeParse({ usn: normalizedUsn, email, password });
     if (!parsed.success) {
       toast.error(parsed.error.errors[0].message);
       return;
@@ -62,7 +72,13 @@ function AuthPage() {
         .select("usn, claimed_by")
         .eq("usn", parsed.data.usn)
         .maybeSingle();
-      if (!row) { toast.error(`USN ${parsed.data.usn} is not on the registry.`); setBusy(false); return; }
+      if (!row) {
+        toast.error(
+          `USN ${parsed.data.usn} isn't on our registry. If you believe this is an error, contact studentvoice.muse@gmail.com.`,
+        );
+        setBusy(false);
+        return;
+      }
       if (row.claimed_by) { toast.error(`USN ${parsed.data.usn} is already in use.`); setBusy(false); return; }
 
       const { data, error } = await supabase.auth.signUp({
@@ -105,7 +121,7 @@ function AuthPage() {
       // If they signed up before but never claimed a USN (e.g. confirmed email), claim now.
       if (data.user && usn) {
         const fp = await deviceFingerprint();
-        await supabase.rpc("claim_usn", { _usn: usn.toUpperCase().trim(), _fingerprint: fp ?? undefined, _ip_hash: undefined });
+        await supabase.rpc("claim_usn", { _usn: normalizeUSN(usn), _fingerprint: fp ?? undefined, _ip_hash: undefined });
       }
       await refreshProfile();
       navigate({ to: "/feed" });
@@ -137,10 +153,24 @@ function AuthPage() {
     e.preventDefault();
     setBusy(true);
     try {
+      const normalized = normalizeUSN(usn);
       const parsed = z
         .string()
-        .regex(/^[0-9]{2}[A-Z]{3,4}[0-9]{3}$/)
-        .parse(usn.toUpperCase().trim());
+        .regex(/^[0-9]{2}SE(AI|AD|CD|BR|CV)[0-9]{3}$/, "Enter a valid USN, e.g. 24SEAI003.")
+        .parse(normalized);
+      // Server-side registry check before claiming.
+      const { data: row } = await supabase
+        .from("allowed_usns")
+        .select("usn, claimed_by")
+        .eq("usn", parsed)
+        .maybeSingle();
+      if (!row) {
+        toast.error(
+          `USN ${parsed} isn't on our registry. If you believe this is an error, contact studentvoice.muse@gmail.com.`,
+        );
+        setBusy(false);
+        return;
+      }
       const fp = await deviceFingerprint();
       const { error } = await supabase.rpc("claim_usn", { _usn: parsed, _fingerprint: fp ?? undefined, _ip_hash: undefined });
       if (error) throw error;
