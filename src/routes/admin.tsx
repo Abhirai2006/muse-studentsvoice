@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
-import { runResolutionAndSend } from "@/lib/escalations.functions";
+import { runResolutionAndListLetters, markLetterSent, type PendingLetter } from "@/lib/escalations.functions";
+import { generateLetterPDF } from "@/lib/letterPdf";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -37,7 +38,10 @@ function AdminPage() {
     },
     enabled: !!user && isAdmin,
   });
-  const resolveAndSend = useServerFn(runResolutionAndSend);
+  const resolveAndList = useServerFn(runResolutionAndListLetters);
+  const markSent = useServerFn(markLetterSent);
+  const [letters, setLetters] = useState<PendingLetter[]>([]);
+  const [running, setRunning] = useState(false);
 
   if (loading) return <SiteShell><p className="text-sm text-muted-foreground">Loading…</p></SiteShell>;
   if (!user) return <SiteShell><p>You need to <Link to="/auth" className="underline">sign in</Link>.</p></SiteShell>;
@@ -56,13 +60,36 @@ function AdminPage() {
   }
   async function runResolve() {
     try {
-      const r = await resolveAndSend();
+      setRunning(true);
+      const r = await resolveAndList();
+      setLetters(r.letters);
       toast.success(
-        `Resolved ${r.resolved ?? 0}. Emails sent for ${r.sent} verified post(s) to ${r.recipients} recipient(s).`,
+        `Resolved ${r.resolved}. ${r.letters.length} letter(s) ready to download.`,
       );
       qc.invalidateQueries({ queryKey: ["public_posts"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to run resolution.");
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  async function downloadLetter(letter: PendingLetter) {
+    const rec = (recipients.data ?? []) as Array<{ name: string; email: string; role: string }>;
+    try {
+      await generateLetterPDF(letter, rec);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to generate PDF.");
+    }
+  }
+
+  async function markLetterDone(letter: PendingLetter) {
+    try {
+      await markSent({ data: { escalationId: letter.escalationId } });
+      setLetters((prev) => prev.filter((l) => l.escalationId !== letter.escalationId));
+      toast.success("Marked as sent.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to mark sent.");
     }
   }
 
@@ -97,11 +124,35 @@ function AdminPage() {
       </section>
 
       <section className="rounded-xl border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold">Run resolution &amp; send letters</h2>
+        <h2 className="text-sm font-semibold">Run resolution &amp; download letters</h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Verifies/deletes posts that have met thresholds and emails verified complaints to the Director and VC from the connected Gmail account.
+          Verifies or deletes posts that have crossed the vote threshold, then lists verified
+          complaints as printable letters. Download each PDF and forward it to the Director / VC
+          from your own email account, then mark it as sent.
         </p>
-        <Button className="mt-3" onClick={runResolve}>Run now</Button>
+        <Button className="mt-3" onClick={runResolve} disabled={running}>
+          {running ? "Running…" : "Run resolution"}
+        </Button>
+
+        {letters.length > 0 && (
+          <ul className="mt-4 divide-y divide-border text-sm">
+            {letters.map((l) => (
+              <li key={l.escalationId} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="font-medium">Ref {l.postId.slice(0, 8).toUpperCase()}</p>
+                  <p className="line-clamp-1 text-xs text-muted-foreground">{l.body}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    {l.trueCount} True · {l.falseCount} False
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => downloadLetter(l)}>Download PDF</Button>
+                  <Button size="sm" onClick={() => markLetterDone(l)}>Mark sent</Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </SiteShell>
   );
