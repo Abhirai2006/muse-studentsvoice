@@ -1,0 +1,1 @@
+ALTER TABLE public.allowed_usns ADD COLUMN IF NOT EXISTS department text;

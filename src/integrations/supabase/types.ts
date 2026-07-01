@@ -18,16 +18,19 @@ export type Database = {
         Row: {
           claimed_at: string | null
           claimed_by: string | null
+          department: string | null
           usn: string
         }
         Insert: {
           claimed_at?: string | null
           claimed_by?: string | null
+          department?: string | null
           usn: string
         }
         Update: {
           claimed_at?: string | null
           claimed_by?: string | null
+          department?: string | null
           usn?: string
         }
         Relationships: []

@@ -91,8 +91,8 @@ function Privacy() {
 
         <p className="mt-8 text-xs text-muted-foreground">
           Questions? Email{" "}
-          <a className="underline" href="mailto:bestofsnips431@gmail.com">
-            bestofsnips431@gmail.com
+          <a className="underline" href="mailto:studentvoice.muse@gmail.com">
+            studentvoice.muse@gmail.com
           </a>
           . See also our <Link to="/terms" className="underline">Terms of Use</Link>.
         </p>
