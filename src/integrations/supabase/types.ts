@@ -301,6 +301,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_visits: {
+        Row: {
+          first_seen: string
+          last_seen: string
+          session_id: string
+        }
+        Insert: {
+          first_seen?: string
+          last_seen?: string
+          session_id: string
+        }
+        Update: {
+          first_seen?: string
+          last_seen?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
