@@ -90,3 +90,44 @@ export async function generateLetterPDF(letter: PendingLetter, recipients: Recip
 
   doc.save(`Student-Voice-Letter-${ref}.pdf`);
 }
+
+/**
+ * Build an email subject + plain-text body for a verified complaint so the
+ * admin can paste it into their own email client and forward it manually.
+ */
+export function buildLetterEmail(letter: PendingLetter, recipients: Recipient[]) {
+  const total = letter.trueCount + letter.falseCount;
+  const pct = total ? Math.round((letter.trueCount * 100) / total) : 0;
+  const ref = letter.postId.slice(0, 8).toUpperCase();
+  const today = new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" });
+
+  const subject = `MUSE Student Voice — Verified student complaint (Ref SV/${ref})`;
+  const to = recipients.map((r) => r.email).join(",");
+  const cc = "";
+
+  const body =
+`Respected Sir/Madam,
+
+A student complaint has been verified as credible by the MUSE student community on the Student Voice platform. In line with platform policy, the grievance is forwarded to you for your kind attention and appropriate action.
+
+Reference:    SV/${ref}
+Date:         ${today}
+Submitted:    ${new Date(letter.createdAt).toLocaleString("en-IN")}
+Verified:     ${letter.resolvedAt ? new Date(letter.resolvedAt).toLocaleString("en-IN") : "—"}
+Community vote: ${letter.trueCount} True / ${letter.falseCount} False (${pct}% credibility)
+
+Complaint (verbatim):
+"${letter.body}"
+
+The author's identity is withheld to protect the student, but they are a verified student of the institution whose USN was authenticated at the time of posting. The complaint has passed the platform's peer-verification threshold.
+
+A formal PDF letter is attached / available on request.
+
+Respectfully submitted,
+The MUSE Student Body
+via Student Voice — https://muse-studentsvoice.lovable.app
+`;
+
+  const mailto = `mailto:${encodeURIComponent(to)}${cc ? `?cc=${encodeURIComponent(cc)}&` : "?"}subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return { subject, body, to, mailto };
+}
