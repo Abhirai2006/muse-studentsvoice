@@ -72,6 +72,10 @@ function ResetPasswordPage() {
             <Link to="/auth" className="underline">Request a new one</Link>.
           </p>
         )}
+        <p className="mt-4 rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+          Didn&apos;t receive the reset email? Check your spam folder, or contact the admin at{" "}
+          <a href="mailto:studentvoice.muse@gmail.com" className="underline">studentvoice.muse@gmail.com</a>.
+        </p>
         {ready === "ok" && !done && (
           <form onSubmit={handleSubmit} className="mt-4 space-y-3">
             <div>
