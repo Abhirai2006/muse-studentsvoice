@@ -12,6 +12,140 @@ export type PendingLetter = {
   falseCount: number;
 };
 
+export type FlaggedPost = {
+  postId: string;
+  body: string;
+  status: string;
+  createdAt: string;
+  flagCount: number;
+  reasons: string[];
+  notes: string[];
+};
+
+async function assertAdmin(context: { supabase: ReturnType<typeof Object>; userId: string }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: isAdmin } = await (context.supabase as any).rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
+  if (!isAdmin) throw new Error("Forbidden");
+}
+
+async function buildLetters(supabaseAdmin: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  from: (t: string) => any;
+}): Promise<PendingLetter[]> {
+  const { data: pending, error } = await supabaseAdmin
+    .from("escalations")
+    .select("id, post_id, posts:posts!inner(id, body, status, created_at, resolved_at)")
+    .is("sent_at", null);
+  if (error) throw error;
+
+  const verified = (pending ?? []).filter(
+    (e: { posts: { status: string } | null }) => e.posts?.status === "verified_true",
+  );
+
+  const letters: PendingLetter[] = [];
+  for (const esc of verified as Array<{
+    id: string;
+    post_id: string;
+    posts: { body: string; created_at: string; resolved_at: string | null };
+  }>) {
+    const { data: votes } = await supabaseAdmin
+      .from("votes")
+      .select("value")
+      .eq("post_id", esc.post_id);
+    const trueCount = (votes ?? []).filter((v: { value: boolean }) => v.value).length;
+    const falseCount = (votes ?? []).length - trueCount;
+    letters.push({
+      escalationId: esc.id,
+      postId: esc.post_id,
+      body: esc.posts.body,
+      createdAt: esc.posts.created_at,
+      resolvedAt: esc.posts.resolved_at,
+      trueCount,
+      falseCount,
+    });
+  }
+  return letters;
+}
+
+/** List pending letters without running resolution (for the admin dashboard). */
+export const listPendingLetters = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    return { letters: await buildLetters(supabaseAdmin) };
+  });
+
+/** List posts that students have flagged, with counts and reasons. */
+export const listFlaggedPosts = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ flagged: FlaggedPost[] }> => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("post_flags")
+      .select("post_id, reason, note, posts:posts!inner(id, body, status, created_at)")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+
+    const byPost = new Map<string, FlaggedPost>();
+    for (const row of (data ?? []) as Array<{
+      post_id: string;
+      reason: string;
+      note: string | null;
+      posts: { body: string; status: string; created_at: string };
+    }>) {
+      const existing = byPost.get(row.post_id);
+      if (existing) {
+        existing.flagCount += 1;
+        existing.reasons.push(row.reason);
+        if (row.note) existing.notes.push(row.note);
+      } else {
+        byPost.set(row.post_id, {
+          postId: row.post_id,
+          body: row.posts.body,
+          status: row.posts.status,
+          createdAt: row.posts.created_at,
+          flagCount: 1,
+          reasons: [row.reason],
+          notes: row.note ? [row.note] : [],
+        });
+      }
+    }
+    return { flagged: Array.from(byPost.values()).sort((a, b) => b.flagCount - a.flagCount) };
+  });
+
+/** Admin removes a post (and its flags/votes/comments cascade via FKs). */
+export const adminDeletePost = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ postId: z.string().uuid() }).parse(data))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("post_flags").delete().eq("post_id", data.postId);
+    await supabaseAdmin.from("comments").delete().eq("post_id", data.postId);
+    await supabaseAdmin.from("votes").delete().eq("post_id", data.postId);
+    await supabaseAdmin.from("escalations").delete().eq("post_id", data.postId);
+    const { error } = await supabaseAdmin.from("posts").delete().eq("id", data.postId);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+/** Admin dismisses all flags on a post without deleting the post. */
+export const adminDismissFlags = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ postId: z.string().uuid() }).parse(data))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("post_flags").delete().eq("post_id", data.postId);
+    if (error) throw error;
+    return { ok: true };
+  });
+
 /**
  * Admin action: run the resolver (marks posts verified/deleted based on votes)
  * and return the list of verified escalations that still need a letter sent.
