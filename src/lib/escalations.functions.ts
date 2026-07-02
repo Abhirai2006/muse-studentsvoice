@@ -22,9 +22,9 @@ export type FlaggedPost = {
   notes: string[];
 };
 
-async function assertAdmin(context: { supabase: ReturnType<typeof Object>; userId: string }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: isAdmin } = await (context.supabase as any).rpc("has_role", {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertAdmin(context: { supabase: any; userId: string }) {
+  const { data: isAdmin } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
   });
