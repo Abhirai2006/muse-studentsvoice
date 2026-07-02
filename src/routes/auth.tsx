@@ -216,6 +216,10 @@ function AuthPage() {
               <p className="mt-3 rounded-md border border-border bg-muted/40 p-3 text-sm">
                 If an account exists for that email, a reset link has been sent.
               </p>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Didn&apos;t get the email? Check your spam folder, or contact the admin at{" "}
+                <a href="mailto:studentvoice.muse@gmail.com" className="underline">studentvoice.muse@gmail.com</a>.
+              </p>
               <button
                 className="mt-4 text-xs text-muted-foreground underline"
                 onClick={() => { setMode("signin"); setForgotSent(false); }}
