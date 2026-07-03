@@ -88,7 +88,7 @@ export async function generateLetterPDF(letter: PendingLetter, recipients: Recip
   doc.setFontSize(9);
   doc.text("via Students Voice — https://muse-studentsvoice.lovable.app", margin, y);
 
-  doc.save(`Student-Voice-Letter-${ref}.pdf`);
+  doc.save(`Students-Voice-Letter-${ref}.pdf`);
 }
 
 /**
