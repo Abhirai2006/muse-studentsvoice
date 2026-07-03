@@ -23,7 +23,7 @@ export async function generateLetterPDF(letter: PendingLetter, recipients: Recip
   // Letterhead
   doc.setFont("times", "bold");
   doc.setFontSize(18);
-  doc.text("MUSE Student Voice", pageWidth / 2, y, { align: "center" });
+  doc.text("MUSE Students Voice", pageWidth / 2, y, { align: "center" });
   y += 20;
   doc.setFont("times", "normal");
   doc.setFontSize(10);
@@ -60,7 +60,7 @@ export async function generateLetterPDF(letter: PendingLetter, recipients: Recip
   doc.setFont("times", "normal");
   doc.text("Respected Sir/Madam,", margin, y); y += 20;
 
-  const intro = "A student complaint has been verified as credible by the MUSE student community on the Student Voice platform. In line with platform policy, the grievance is forwarded to you for your kind attention and appropriate action.";
+  const intro = "A student complaint has been verified as credible by the MUSE student community on the Students Voice platform. In line with platform policy, the grievance is forwarded to you for your kind attention and appropriate action.";
   const introLines = doc.splitTextToSize(intro, contentWidth);
   doc.text(introLines, margin, y); y += introLines.length * 14 + 10;
 
@@ -86,7 +86,7 @@ export async function generateLetterPDF(letter: PendingLetter, recipients: Recip
   doc.text("The MUSE Student Body", margin, y); y += 14;
   doc.setFont("times", "italic");
   doc.setFontSize(9);
-  doc.text("via Student Voice — https://muse-studentsvoice.lovable.app", margin, y);
+  doc.text("via Students Voice — https://muse-studentsvoice.lovable.app", margin, y);
 
   doc.save(`Student-Voice-Letter-${ref}.pdf`);
 }
@@ -101,14 +101,14 @@ export function buildLetterEmail(letter: PendingLetter, recipients: Recipient[])
   const ref = letter.postId.slice(0, 8).toUpperCase();
   const today = new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" });
 
-  const subject = `MUSE Student Voice — Verified student complaint (Ref SV/${ref})`;
+  const subject = `MUSE Students Voice — Verified student complaint (Ref SV/${ref})`;
   const to = recipients.map((r) => r.email).join(",");
   const cc = "";
 
   const body =
 `Respected Sir/Madam,
 
-A student complaint has been verified as credible by the MUSE student community on the Student Voice platform. In line with platform policy, the grievance is forwarded to you for your kind attention and appropriate action.
+A student complaint has been verified as credible by the MUSE student community on the Students Voice platform. In line with platform policy, the grievance is forwarded to you for your kind attention and appropriate action.
 
 Reference:    SV/${ref}
 Date:         ${today}
@@ -125,7 +125,7 @@ A formal PDF letter is attached / available on request.
 
 Respectfully submitted,
 The MUSE Student Body
-via Student Voice — https://muse-studentsvoice.lovable.app
+via Students Voice — https://muse-studentsvoice.lovable.app
 `;
 
   const mailto = `mailto:${encodeURIComponent(to)}${cc ? `?cc=${encodeURIComponent(cc)}&` : "?"}subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

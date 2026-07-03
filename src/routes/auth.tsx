@@ -14,11 +14,11 @@ import { Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — MUSE Student Voice" },
-      { name: "description", content: "Sign in or create an account on MUSE Student Voice using your Mysore University School of Engineering USN. One account per USN, enforced." },
-      { property: "og:title", content: "Sign in — MUSE Student Voice" },
+      { title: "Sign in — MUSE Students Voice" },
+      { name: "description", content: "Sign in or create an account on MUSE Students Voice using your Mysore University School of Engineering USN. One account per USN, enforced." },
+      { property: "og:title", content: "Sign in — MUSE Students Voice" },
       { property: "og:description", content: "Use your MUSE USN to sign in. One USN per student, no public name shown on any post or vote." },
-      { name: "twitter:title", content: "Sign in — MUSE Student Voice" },
+      { name: "twitter:title", content: "Sign in — MUSE Students Voice" },
       { name: "twitter:description", content: "Use your MUSE USN to sign in. One USN per student, no public name shown on any post or vote." },
       { name: "robots", content: "noindex" },
     ],
@@ -74,7 +74,7 @@ function AuthPage() {
         .maybeSingle();
       if (!row) {
         toast.error(
-          `USN ${parsed.data.usn} isn't on our registry. If you believe this is an error, contact studentvoice.muse@gmail.com.`,
+          `USN ${parsed.data.usn} isn't on our registry. If you believe this is an error, contact studentsvoice.muse@gmail.com.`,
         );
         setBusy(false);
         return;
@@ -166,7 +166,7 @@ function AuthPage() {
         .maybeSingle();
       if (!row) {
         toast.error(
-          `USN ${parsed} isn't on our registry. If you believe this is an error, contact studentvoice.muse@gmail.com.`,
+          `USN ${parsed} isn't on our registry. If you believe this is an error, contact studentsvoice.muse@gmail.com.`,
         );
         setBusy(false);
         return;
@@ -218,7 +218,7 @@ function AuthPage() {
               </p>
               <p className="mt-3 text-xs text-muted-foreground">
                 Didn&apos;t get the email? Check your spam folder, or contact the admin at{" "}
-                <a href="mailto:studentvoice.muse@gmail.com" className="underline">studentvoice.muse@gmail.com</a>.
+                <a href="mailto:studentsvoice.muse@gmail.com" className="underline">studentsvoice.muse@gmail.com</a>.
               </p>
               <button
                 className="mt-4 text-xs text-muted-foreground underline"

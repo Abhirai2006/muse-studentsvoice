@@ -10,8 +10,8 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Set a new password — MUSE Student Voice" },
-      { name: "description", content: "Choose a new password for your MUSE Student Voice account." },
+      { title: "Set a new password — MUSE Students Voice" },
+      { name: "description", content: "Choose a new password for your MUSE Students Voice account." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -74,7 +74,7 @@ function ResetPasswordPage() {
         )}
         <p className="mt-4 rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
           Didn&apos;t receive the reset email? Check your spam folder, or contact the admin at{" "}
-          <a href="mailto:studentvoice.muse@gmail.com" className="underline">studentvoice.muse@gmail.com</a>.
+          <a href="mailto:studentsvoice.muse@gmail.com" className="underline">studentsvoice.muse@gmail.com</a>.
         </p>
         {ready === "ok" && !done && (
           <form onSubmit={handleSubmit} className="mt-4 space-y-3">

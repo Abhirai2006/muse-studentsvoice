@@ -14,9 +14,9 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-border bg-card/60 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
           <Link to="/" className="flex items-center gap-2 font-serif text-lg font-semibold text-primary">
-            <img src={wolfLogo} alt="MUSE Student Voice" width={32} height={32} className="h-8 w-8 object-contain dark:brightness-0 dark:invert" />
+            <img src={wolfLogo} alt="MUSE Students Voice" width={32} height={32} className="h-8 w-8 object-contain dark:brightness-0 dark:invert" />
             <span className="leading-tight">
-              Student Voice
+              Students Voice
               <span className="block text-[10px] font-sans font-normal uppercase tracking-wider text-muted-foreground">MUSE · Mysore University School of Engineering</span>
             </span>
           </Link>
@@ -67,8 +67,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="mt-12 border-t border-border bg-card/60 text-muted-foreground">
         <div className="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-2 md:grid-cols-4">
           <div className="flex flex-col items-start gap-3">
-            <img src={wolfLogo} alt="MUSE Student Voice" width={48} height={48} loading="lazy" className="h-12 w-12 object-contain dark:brightness-0 dark:invert" />
-            <div className="font-serif text-base font-semibold text-foreground">Student Voice</div>
+            <img src={wolfLogo} alt="MUSE Students Voice" width={48} height={48} loading="lazy" className="h-12 w-12 object-contain dark:brightness-0 dark:invert" />
+            <div className="font-serif text-base font-semibold text-foreground">Students Voice</div>
             <p className="text-xs leading-relaxed">
               MUSE · Mysore University<br />School of Engineering
             </p>
@@ -92,13 +92,13 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <div>
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">Contact</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="mailto:studentvoice.muse@gmail.com" className="hover:text-foreground break-all">studentvoice.muse@gmail.com</a></li>
+              <li><a href="mailto:studentsvoice.muse@gmail.com" className="hover:text-foreground break-all">studentsvoice.muse@gmail.com</a></li>
             </ul>
           </div>
         </div>
         <div className="border-t border-border">
           <p className="mx-auto max-w-5xl px-4 py-4 text-center text-xs">
-            © {new Date().getFullYear()} MUSE Student Voice. A peer-moderated record of student grievances. All rights reserved.
+            © {new Date().getFullYear()} MUSE Students Voice. A peer-moderated record of student grievances. All rights reserved.
           </p>
         </div>
       </footer>

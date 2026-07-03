@@ -38,7 +38,7 @@ export function SplashScreen({ onDone }: { onDone?: () => void }) {
           />
         </div>
         <h1 className="mt-5 font-serif text-2xl font-semibold text-foreground animate-[fadeUp_900ms_ease-out_both]">
-          Student Voice
+          Students Voice
         </h1>
         <p className="mt-1 text-sm text-muted-foreground animate-[fadeUp_1100ms_ease-out_both]">
           MUSE · Mysore University School of Engineering

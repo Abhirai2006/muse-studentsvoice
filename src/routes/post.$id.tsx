@@ -28,9 +28,9 @@ import {
 export const Route = createFileRoute("/post/$id")({
   head: ({ params }) => ({
     meta: [
-      { title: `Complaint #${params.id.slice(0, 6)} — MUSE Student Voice` },
+      { title: `Complaint #${params.id.slice(0, 6)} — MUSE Students Voice` },
       { name: "description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
-      { property: "og:title", content: `Complaint #${params.id.slice(0, 6)} — MUSE Student Voice` },
+      { property: "og:title", content: `Complaint #${params.id.slice(0, 6)} — MUSE Students Voice` },
       { property: "og:description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
       { name: "twitter:description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
     ],

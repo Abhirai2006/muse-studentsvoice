@@ -4,12 +4,12 @@ import { SiteShell } from "@/components/SiteShell";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Use — MUSE Student Voice" },
-      { name: "description", content: "Acceptable-use rules for MUSE Student Voice: who can post, what is not allowed, how moderation works, and what is not guaranteed." },
-      { property: "og:title", content: "Terms of Use — MUSE Student Voice" },
-      { property: "og:description", content: "House rules for MUSE Student Voice: posting limits, prohibited content, moderation, and admin escalation policy." },
-      { name: "twitter:title", content: "Terms of Use — MUSE Student Voice" },
-      { name: "twitter:description", content: "House rules for MUSE Student Voice: posting limits, prohibited content, moderation, and admin escalation policy." },
+      { title: "Terms of Use — MUSE Students Voice" },
+      { name: "description", content: "Acceptable-use rules for MUSE Students Voice: who can post, what is not allowed, how moderation works, and what is not guaranteed." },
+      { property: "og:title", content: "Terms of Use — MUSE Students Voice" },
+      { property: "og:description", content: "House rules for MUSE Students Voice: posting limits, prohibited content, moderation, and admin escalation policy." },
+      { name: "twitter:title", content: "Terms of Use — MUSE Students Voice" },
+      { name: "twitter:description", content: "House rules for MUSE Students Voice: posting limits, prohibited content, moderation, and admin escalation policy." },
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/terms" },
     ],
     links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/terms" }],
@@ -26,7 +26,7 @@ function Terms() {
 
         <h2 className="mt-6 text-base font-semibold">Who can use this</h2>
         <p className="text-sm">
-          MUSE Student Voice is open to students of <strong>Mysore University
+          MUSE Students Voice is open to students of <strong>Mysore University
           School of Engineering (MUSE)</strong> whose USN is on the registry.
           One account per USN.
         </p>
@@ -49,7 +49,7 @@ function Terms() {
 
         <h2 className="mt-6 text-base font-semibold">No guarantees</h2>
         <p className="text-sm">
-          Student Voice is provided as-is by a student maintainer. We make no
+          Students Voice is provided as-is by a student maintainer. We make no
           guarantee that complaints will be acted upon by the college.
         </p>
       </article>

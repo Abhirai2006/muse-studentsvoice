@@ -5,11 +5,11 @@ import { QUORUM, THRESHOLD_PCT } from "@/lib/posts";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "How it works — MUSE Student Voice" },
-      { name: "description", content: "Step-by-step guide to MUSE Student Voice: posting with USN, peer voting, the 30-vote quorum, the 70% threshold, and escalation to Director and VC." },
-      { property: "og:title", content: "How it works — MUSE Student Voice" },
+      { title: "How it works — MUSE Students Voice" },
+      { name: "description", content: "Step-by-step guide to MUSE Students Voice: posting with USN, peer voting, the 30-vote quorum, the 70% threshold, and escalation to Director and VC." },
+      { property: "og:title", content: "How it works — MUSE Students Voice" },
       { property: "og:description", content: "How complaints at Mysore University School of Engineering get posted, peer-voted, verified at 70% credibility, and escalated to college leadership." },
-      { name: "twitter:title", content: "How it works — MUSE Student Voice" },
+      { name: "twitter:title", content: "How it works — MUSE Students Voice" },
       { name: "twitter:description", content: "How complaints at Mysore University School of Engineering get posted, peer-voted, verified at 70% credibility, and escalated to college leadership." },
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/about" },
     ],
@@ -22,7 +22,7 @@ function About() {
   return (
     <SiteShell>
       <article className="prose prose-sm dark:prose-invert max-w-none">
-        <h1 className="font-serif text-2xl font-semibold">How Student Voice works</h1>
+        <h1 className="font-serif text-2xl font-semibold">How Students Voice works</h1>
         <p className="text-sm text-muted-foreground">
           A peer-moderated record of student grievances at MUSE — Mysore University School of Engineering.
         </p>

@@ -12,12 +12,12 @@ import { ShieldCheck, Clock, Trash2 } from "lucide-react";
 export const Route = createFileRoute("/my-complaints")({
   head: () => ({
     meta: [
-      { title: "My complaints — MUSE Student Voice" },
-      { name: "description", content: "Private dashboard of complaints you submitted on MUSE Student Voice with current status (open, verified, removed) and live peer vote counts." },
-      { property: "og:title", content: "My complaints — MUSE Student Voice" },
-      { property: "og:description", content: "Track every complaint you posted on MUSE Student Voice — status, vote tallies, and comment activity in one place." },
-      { name: "twitter:title", content: "My complaints — MUSE Student Voice" },
-      { name: "twitter:description", content: "Track every complaint you posted on MUSE Student Voice — status, vote tallies, and comment activity in one place." },
+      { title: "My complaints — MUSE Students Voice" },
+      { name: "description", content: "Private dashboard of complaints you submitted on MUSE Students Voice with current status (open, verified, removed) and live peer vote counts." },
+      { property: "og:title", content: "My complaints — MUSE Students Voice" },
+      { property: "og:description", content: "Track every complaint you posted on MUSE Students Voice — status, vote tallies, and comment activity in one place." },
+      { name: "twitter:title", content: "My complaints — MUSE Students Voice" },
+      { name: "twitter:description", content: "Track every complaint you posted on MUSE Students Voice — status, vote tallies, and comment activity in one place." },
       { name: "robots", content: "noindex" },
     ],
   }),
