@@ -494,6 +494,7 @@ export type Database = {
       }
     }
     Functions: {
+      check_usn_available: { Args: { _usn: string }; Returns: string }
       claim_usn: {
         Args: { _fingerprint?: string; _ip_hash?: string; _usn: string }
         Returns: undefined
