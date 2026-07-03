@@ -24,7 +24,7 @@ import { generateLetterPDF, buildLetterEmail } from "@/lib/letterPdf";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin — Student Voice" },
+      { title: "Admin — Students Voice" },
       { name: "description", content: "Manage recipients and resolve posts." },
     ],
   }),

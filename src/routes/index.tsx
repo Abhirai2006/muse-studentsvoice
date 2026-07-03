@@ -12,11 +12,11 @@ import { VisitorBadge } from "@/components/VisitorBadge";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Student Voice — MUSE student complaints board" },
+      { title: "Students Voice — MUSE student complaints board" },
       { name: "description", content: "Public, anonymous board of student complaints from MUSE (Mysore University School of Engineering). Peer-verified issues are escalated to the Director and VC." },
-      { property: "og:title", content: "Student Voice — MUSE student complaints board" },
+      { property: "og:title", content: "Students Voice — MUSE student complaints board" },
       { property: "og:description", content: "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership." },
-      { name: "twitter:title", content: "Student Voice — MUSE student complaints board" },
+      { name: "twitter:title", content: "Students Voice — MUSE student complaints board" },
       { name: "twitter:description", content: "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership." },
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/" },
     ],

@@ -4,11 +4,11 @@ import { SiteShell } from "@/components/SiteShell";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy & Anonymity — MUSE Student Voice" },
-      { name: "description", content: "Plain-language explanation of how MUSE Student Voice handles your USN, what is shown to other students, and what is shared with the Director and VC." },
-      { property: "og:title", content: "Privacy & Anonymity — MUSE Student Voice" },
+      { title: "Privacy & Anonymity — MUSE Students Voice" },
+      { name: "description", content: "Plain-language explanation of how MUSE Students Voice handles your USN, what is shown to other students, and what is shared with the Director and VC." },
+      { property: "og:title", content: "Privacy & Anonymity — MUSE Students Voice" },
       { property: "og:description", content: "Pseudonymous, not fully anonymous: exactly what we store about MUSE students, what is public, and what reaches college leadership." },
-      { name: "twitter:title", content: "Privacy & Anonymity — MUSE Student Voice" },
+      { name: "twitter:title", content: "Privacy & Anonymity — MUSE Students Voice" },
       { name: "twitter:description", content: "Pseudonymous, not fully anonymous: exactly what we store about MUSE students, what is public, and what reaches college leadership." },
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/privacy" },
     ],
@@ -28,7 +28,7 @@ function Privacy() {
 
         <h2 className="mt-6 text-base font-semibold">Pseudonymous, not fully anonymous</h2>
         <p className="text-sm">
-          MUSE Student Voice is <strong>pseudonymous</strong>. We collect your USN,
+          MUSE Students Voice is <strong>pseudonymous</strong>. We collect your USN,
           email, and password (or a Google sign-in) so that we can enforce one
           account per student and stop duplicate voting. We do not collect your
           full name, phone number, or year/section beyond what your USN encodes.
@@ -91,8 +91,8 @@ function Privacy() {
 
         <p className="mt-8 text-xs text-muted-foreground">
           Questions? Email{" "}
-          <a className="underline" href="mailto:studentvoice.muse@gmail.com">
-            studentvoice.muse@gmail.com
+          <a className="underline" href="mailto:studentsvoice.muse@gmail.com">
+            studentsvoice.muse@gmail.com
           </a>
           . See also our <Link to="/terms" className="underline">Terms of Use</Link>.
         </p>

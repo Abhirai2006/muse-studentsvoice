@@ -19,11 +19,11 @@ import {
 export const Route = createFileRoute("/feed")({
   head: () => ({
     meta: [
-      { title: "Complaint feed — MUSE Student Voice" },
+      { title: "Complaint feed — MUSE Students Voice" },
       { name: "description", content: "Post a new complaint or vote on others. Signed-in feed for verified MUSE students with filters by location and issue type." },
-      { property: "og:title", content: "Complaint feed — MUSE Student Voice" },
+      { property: "og:title", content: "Complaint feed — MUSE Students Voice" },
       { property: "og:description", content: "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type." },
-      { name: "twitter:title", content: "Complaint feed — MUSE Student Voice" },
+      { name: "twitter:title", content: "Complaint feed — MUSE Students Voice" },
       { name: "twitter:description", content: "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type." },
       { name: "robots", content: "noindex" },
     ],
