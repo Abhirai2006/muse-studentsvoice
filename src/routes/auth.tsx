@@ -66,20 +66,16 @@ function AuthPage() {
     }
     setBusy(true);
     try {
-      // Pre-check USN to give a friendly error before creating an auth user.
-      const { data: row } = await supabase
-        .from("allowed_usns")
-        .select("usn, claimed_by")
-        .eq("usn", parsed.data.usn)
-        .maybeSingle();
-      if (!row) {
+      // Pre-check USN via safe RPC (registry is not publicly readable).
+      const { data: status } = await supabase.rpc("check_usn_available", { _usn: parsed.data.usn });
+      if (status === "invalid") {
         toast.error(
           `USN ${parsed.data.usn} isn't on our registry. If you believe this is an error, contact studentsvoice.muse@gmail.com.`,
         );
         setBusy(false);
         return;
       }
-      if (row.claimed_by) { toast.error(`USN ${parsed.data.usn} is already in use.`); setBusy(false); return; }
+      if (status === "claimed") { toast.error(`USN ${parsed.data.usn} is already in use.`); setBusy(false); return; }
 
       const { data, error } = await supabase.auth.signUp({
         email: parsed.data.email,
@@ -158,13 +154,9 @@ function AuthPage() {
         .string()
         .regex(/^[0-9]{2}SE(AI|AD|CD|BR|CV)[0-9]{3}$/, "Enter a valid USN, e.g. 24SEAI003.")
         .parse(normalized);
-      // Server-side registry check before claiming.
-      const { data: row } = await supabase
-        .from("allowed_usns")
-        .select("usn, claimed_by")
-        .eq("usn", parsed)
-        .maybeSingle();
-      if (!row) {
+      // Server-side registry check before claiming (via safe RPC).
+      const { data: status } = await supabase.rpc("check_usn_available", { _usn: parsed });
+      if (status === "invalid") {
         toast.error(
           `USN ${parsed} isn't on our registry. If you believe this is an error, contact studentsvoice.muse@gmail.com.`,
         );
