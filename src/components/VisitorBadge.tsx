@@ -4,7 +4,6 @@ import { Users, Eye } from "lucide-react";
 
 const STORAGE_KEY = "sv_session_id";
 const HEARTBEAT_MS = 30_000;
-const ONLINE_WINDOW_SECS = 90;
 
 function getSessionId() {
   try {
