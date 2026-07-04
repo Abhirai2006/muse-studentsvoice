@@ -28,26 +28,15 @@ export function VisitorBadge() {
     let cancelled = false;
 
     async function heartbeat() {
-      await supabase
-        .from("site_visits")
-        .upsert(
-          { session_id: sessionId, last_seen: new Date().toISOString() },
-          { onConflict: "session_id" },
-        );
+      await supabase.rpc("record_visit", { _session_id: sessionId });
     }
 
     async function refresh() {
-      const since = new Date(Date.now() - ONLINE_WINDOW_SECS * 1000).toISOString();
-      const [{ count: onlineCount }, { count: totalCount }] = await Promise.all([
-        supabase
-          .from("site_visits")
-          .select("*", { count: "exact", head: true })
-          .gte("last_seen", since),
-        supabase.from("site_visits").select("*", { count: "exact", head: true }),
-      ]);
-      if (!cancelled) {
-        setOnline(onlineCount ?? 0);
-        setTotal(totalCount ?? 0);
+      const { data } = await supabase.rpc("get_visit_counts");
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!cancelled && row) {
+        setOnline(Number(row.online_count ?? 0));
+        setTotal(Number(row.total_count ?? 0));
       }
     }
 
