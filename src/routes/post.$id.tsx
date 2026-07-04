@@ -26,15 +26,56 @@ import {
 } from "@/lib/posts";
 
 export const Route = createFileRoute("/post/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `Complaint #${params.id.slice(0, 6)} — MUSE Students Voice` },
-      { name: "description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
-      { property: "og:title", content: `Complaint #${params.id.slice(0, 6)} — MUSE Students Voice` },
-      { property: "og:description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
-      { name: "twitter:description", content: "An anonymous MUSE student complaint with peer voting, discussion and verification status." },
-    ],
-  }),
+  loader: async ({ params }) => {
+    const post = await fetchPublicPost(params.id).catch(() => null);
+    return { post };
+  },
+  head: ({ params, loaderData }) => {
+    const post = loaderData?.post ?? null;
+    const shortId = params.id.slice(0, 6);
+    const snippet = post?.body
+      ? post.body.replace(/\s+/g, " ").trim().slice(0, 155)
+      : "An anonymous MUSE student complaint with peer voting, discussion, and verification status.";
+    const title = post
+      ? `${snippet.slice(0, 60)}${snippet.length > 60 ? "…" : ""} — MUSE Students Voice`
+      : `Complaint #${shortId} — MUSE Students Voice`;
+    const url = `https://muse-studentsvoice.lovable.app/post/${params.id}`;
+    const scripts = post
+      ? [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "DiscussionForumPosting",
+              headline: `Complaint #${shortId}`,
+              articleBody: post.body,
+              datePublished: post.created_at,
+              dateModified: post.updated_at ?? post.created_at,
+              url,
+              author: { "@type": "Person", name: "Anonymous MUSE student" },
+              interactionStatistic: [
+                { "@type": "InteractionCounter", interactionType: "https://schema.org/LikeAction", userInteractionCount: post.true_count },
+                { "@type": "InteractionCounter", interactionType: "https://schema.org/CommentAction", userInteractionCount: post.comment_count },
+              ],
+            }),
+          },
+        ]
+      : undefined;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: snippet },
+        { property: "og:title", content: title },
+        { property: "og:description", content: snippet },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: snippet },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts,
+    };
+  },
   component: PostDetailPage,
 });
 
@@ -153,6 +194,7 @@ function PostDetailPage() {
       <Link to="/" className="text-xs text-muted-foreground hover:underline">← Back to feed</Link>
 
       <article className="mt-4 rounded-xl border border-border bg-card p-6">
+        <h1 className="sr-only">Complaint #{id.slice(0, 6)} — MUSE Students Voice</h1>
         <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Clock className="h-3 w-3" />

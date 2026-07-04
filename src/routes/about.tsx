@@ -14,6 +14,49 @@ export const Route = createFileRoute("/about")({
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/about" },
     ],
     links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/about" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "Who can post a complaint?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Only students with a registered MUSE USN can post. One account per USN, one USN per student, capped at three complaints per day.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: `What is the voting quorum?`,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: `A post can only auto-resolve after it collects at least ${QUORUM} peer votes.`,
+              },
+            },
+            {
+              "@type": "Question",
+              name: "What credibility threshold verifies a complaint?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: `Once the ${QUORUM}-vote quorum is met, a complaint is marked verified when at least ${THRESHOLD_PCT}% of votes are True, and removed when at least ${THRESHOLD_PCT}% are False.`,
+              },
+            },
+            {
+              "@type": "Question",
+              name: "What happens after a complaint is verified?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Verified complaints are compiled into an anonymised PDF letter for the Director and VC of Mysore University School of Engineering. No student identity is shared.",
+              },
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: About,
 });

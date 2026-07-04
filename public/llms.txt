@@ -1,0 +1,20 @@
+# Students Voice — MUSE
+
+> Anonymous, peer-moderated complaint platform for students of Mysore University School of Engineering (MUSE). Posts stay anonymous; verified complaints are compiled into an anonymised PDF letter for college leadership.
+
+Students sign in with a registered USN, post a complaint tagged by location and issue type, and other verified students vote True or False. Once a post reaches a 30-vote quorum, it is verified at 70% True or removed at 70% False.
+
+## Pages
+
+- [Home](/): landing page with the latest public complaint feed and verified complaint count.
+- [Verified complaints](/verified): archive of complaints that reached the credibility threshold.
+- [How it works](/about): posting rules, quorum, verification threshold, and escalation flow.
+- [Complaint writing guide](/complaint-guide): how to structure an effective formal complaint to a university.
+- [Privacy & anonymity](/privacy): how USNs and identities are stored and protected.
+- [Terms of use](/terms): platform terms and content rules.
+
+## Optional
+
+- [Sitemap](/sitemap.xml): machine-readable list of indexable routes.
+
+Contact: studentsvoice.muse@gmail.com
