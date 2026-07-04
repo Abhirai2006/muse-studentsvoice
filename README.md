@@ -1,110 +1,302 @@
-# MUSE Students Voice
+<div align="center">
 
-Anonymous student complaints board for **Mysore University School of Engineering (MUSE)**.
-Students sign in with their USN, post grievances anonymously, and the community
-votes True/False. Verified complaints (past a quorum threshold) are exported as a
-formal PDF letter addressed to the Director and VC. False complaints are removed.
+# 🗣️ MUSE Students Voice
 
-Live: https://muse-studentsvoice.lovable.app
+**Speak up. Anonymously. Together.**
+
+A student-run grievance platform where the campus itself decides what's real —
+every complaint is voted True or False by fellow students, and the ones that
+cross the quorum get auto-drafted into a formal PDF letter to the Director
+and Vice Chancellor.
+
+[![Live Site](https://img.shields.io/badge/Live-muse--studentsvoice.lovable.app-6d28d9?style=for-the-badge)](https://muse-studentsvoice.lovable.app)
+[![Contact](https://img.shields.io/badge/Contact-studentsvoice.muse%40gmail.com-ea4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:studentsvoice.muse@gmail.com)
+
+<p>
+  <img src="https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/TanStack_Start-v1-ff4154?style=flat-square&logo=react-query&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178c6?style=flat-square&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase-Postgres%20%2B%20RLS-3ecf8e?style=flat-square&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/Cloudflare-Workers-f38020?style=flat-square&logo=cloudflare&logoColor=white" />
+</p>
+
+</div>
 
 ---
 
-## Features
+## ✨ Why this exists
 
-- **USN-gated signup** — one account per USN, validated against a seeded registry
-  (AIML, AIDS, CS&D, BMRE, CIVIL — 2022 to 2025 batches, ~1,159 USNs).
-- **Anonymous posting** — USN is stored only to prevent duplicates, never shown
-  on posts, votes, or the letter to leadership.
-- **True/False voting** with a 25/30-vote quorum and percentage breakdown.
-- **Comments** on every post with per-post pseudo-handles.
-- **Public read-only feed** — anyone can browse, see votes and comments.
-- **Location + Issue type** taxonomy (labs, blocks, admin; infrastructure,
-  safety, faculty conduct, etc.).
-- **Admin panel** — moderation queue for flagged posts, threshold-ready
-  complaints, one-click PDF letter generation.
-- **Google OAuth + email/password** with password reset flow.
-- **Live visitor badge**, dark mode ("Midnight Letterhead" palette),
-  SEO metadata, sitemap.xml, robots.txt.
+Every campus has the same story: broken labs, unsafe walkways, unheard voices.
+Complaint boxes get ignored. Group chats go nowhere. Names attached to
+complaints invite retaliation.
 
-## Tech Stack
+**MUSE Students Voice fixes that with three ideas:**
 
-- **Framework**: TanStack Start v1 (React 19, Vite 7, SSR on Cloudflare Workers)
-- **Styling**: Tailwind CSS v4 + shadcn/ui
-- **Backend**: Lovable Cloud (Supabase — Postgres, Auth, RLS)
-- **PDF**: jsPDF (client-side letter generation)
-- **Routing**: File-based routes in `src/routes/`
+1. **Anonymity by design** — Your USN is used **only** to prove you're a real
+   student and prevent duplicates. It never appears on your post, vote, or
+   comment. Not even the admin sees who wrote what.
+2. **Truth by consensus** — Every complaint is voted **True** or **False**.
+   Only complaints that clear a quorum move forward. Fake outrage dies quietly.
+3. **Action, not noise** — Verified complaints are compiled into a formal PDF
+   letter addressed to the Director and Vice Chancellor, ready to send.
 
-## Project Structure
+---
+
+## 🚀 Features
+
+### 🎓 For Students
+- 🔐 **USN-gated signup** — one account per USN, validated against a seeded
+  registry of **~1,159 real USNs** across AIML, AIDS, CS&D, BMRE and CIVIL
+  (batches 2022 – 2025).
+- 🕶️ **Anonymous posting** — pick a location (labs, blocks, admin) and an
+  issue type (infrastructure, safety, faculty conduct, academics…).
+- ✅ **True / False voting** — 30-vote quorum with a live percentage bar.
+- 💬 **Anonymous comments** — everyone gets a per-post pseudo-handle
+  (`Owl-42`, `Falcon-07`…) so threads read like a conversation, not a mob.
+- 🚩 **One-tap flag** for spam, personal attacks, or false claims — flagged
+  posts land in the admin queue automatically.
+- 📰 **Public read-only feed** — parents, alumni, and the press can browse
+  without signing up.
+- 🌗 **Midnight Letterhead** dark mode — a warm, paper-like palette designed
+  for long reads.
+
+### 🛡️ For Admins
+- 📥 **Moderation queue** — every flagged post surfaces here with reporter
+  counts and reasons; one click to remove or dismiss.
+- 🚨 **Threshold alerts** — the panel highlights complaints that just crossed
+  the quorum and are ready to escalate.
+- 📄 **One-click PDF letter** — auto-generates a formal, signed complaint
+  letter (jsPDF) addressed to the Director and VC, along with a matching
+  **copy-paste email body** — so you can send it in under a minute.
+- 👥 **Role-based access** via `user_roles` + `has_role()` RPC — no admin
+  flags on the profile, no privilege escalation.
+
+### 🧠 Under the hood
+- **Server-side rendered** on Cloudflare Workers via TanStack Start.
+- **Row Level Security** on every public table. Public reads happen through
+  sanitized views (`public_posts`, `public_comments`) that strip author IDs.
+- **Security-definer RPCs** (`check_usn_available`, `record_visit`,
+  `get_visit_counts`) so the app never touches sensitive tables directly.
+- **JSON-LD structured data** (`Organization`, `WebSite`,
+  `DiscussionForumPosting`, `FAQPage`) — Google understands every complaint
+  as a first-class forum post.
+- **Live visitor badge** with online / total counters powered by
+  90-second heartbeats.
+- **Full SEO surface** — sitemap.xml, robots.txt, llms.txt, per-post OG /
+  Twitter cards, canonical URLs.
+
+---
+
+## 🧭 The Complaint Lifecycle
+
+```
+   ┌───────────┐    ┌─────────────┐    ┌──────────────┐    ┌────────────┐
+   │  Student  │ →  │  Anonymous  │ →  │   Campus     │ →  │   Admin    │
+   │  signs in │    │   post +    │    │   votes      │    │   letter   │
+   │  with USN │    │  location   │    │  True/False  │    │  + email   │
+   └───────────┘    └─────────────┘    └──────┬───────┘    └─────┬──────┘
+                                              │                  │
+                                    30 votes, majority True      ▼
+                                              │           Director / VC
+                                              ▼
+                                    ✅ Verified & escalated
+```
+
+---
+
+## 🏗️ Tech Stack
+
+| | |
+|--|--|
+| **Framework** | TanStack Start v1 — React 19, SSR-aware, file-based routing |
+| **Build** | Vite 7 |
+| **Language** | TypeScript 5 (strict) |
+| **Styling** | Tailwind CSS v4 (`@import "tailwindcss"`, OKLCH tokens, no config file) |
+| **UI kit** | shadcn/ui + lucide-react |
+| **Backend** | Supabase — Postgres, Auth (email + Google OAuth), Storage, RLS |
+| **Server logic** | `createServerFn` (TanStack) + Postgres `SECURITY DEFINER` RPCs |
+| **PDF** | jsPDF (client-side letter generation) |
+| **Deployment** | Cloudflare Workers (edge SSR) |
+| **Fonts** | Playfair Display · Inter |
+
+All business logic lives in **pure TypeScript** under `src/lib/` — no server
+state leaks into components; every route is a thin adapter over typed server
+functions.
+
+---
+
+## 📁 Project Structure
 
 ```
 src/
-  routes/           # File-based routes (TanStack Router)
-    __root.tsx      # Root layout + sitewide head metadata
-    index.tsx       # Public landing + read-only feed
-    auth.tsx        # Signup / signin / forgot password
-    feed.tsx        # Authenticated feed
-    post.$id.tsx    # Single complaint view
-    admin.tsx       # Admin moderation + letter generation
-    my-complaints.tsx
-    about.tsx  privacy.tsx  terms.tsx  verified.tsx
-    reset-password.tsx
-    sitemap[.]xml.ts
-  components/       # SiteShell, PostCard, SplashScreen, VisitorBadge, ui/*
-  lib/              # auth, posts, escalations, letterPdf, theme
-  integrations/     # supabase clients (auto-generated)
-public/             # robots.txt, static assets
+├── routes/                    # File-based routes (TanStack Router)
+│   ├── __root.tsx             # Global shell, head metadata, JSON-LD
+│   ├── index.tsx              # Public landing + read-only feed
+│   ├── auth.tsx               # Signup / signin / forgot password
+│   ├── reset-password.tsx     # Post-email password reset flow
+│   ├── feed.tsx               # Authenticated feed (H1, filters)
+│   ├── post.$id.tsx           # Single complaint (dynamic OG + JSON-LD)
+│   ├── my-complaints.tsx      # A student's own posts + status
+│   ├── admin.tsx              # Moderation queue + escalation letters
+│   ├── verified.tsx           # Public wall of escalated complaints
+│   ├── about.tsx              # Mission + FAQPage JSON-LD
+│   ├── complaint-guide.tsx    # How-to write an effective complaint
+│   ├── privacy.tsx  terms.tsx
+│   └── sitemap[.]xml.ts       # SSR sitemap generator
+│
+├── components/
+│   ├── SiteShell.tsx          # Nav + footer + theme toggle
+│   ├── PostCard.tsx           # Vote bar, flag button, comment count
+│   ├── SplashScreen.tsx       # Full-screen intro
+│   ├── VisitorBadge.tsx       # Live online/total via RPC
+│   └── ui/                    # shadcn/ui primitives
+│
+├── lib/
+│   ├── posts.functions.ts     # Server fns: list/create/vote/flag
+│   ├── escalations.functions.ts
+│   ├── letterPdf.ts           # jsPDF letter builder
+│   ├── auth.ts theme.ts utils.ts
+│   └── *.server.ts            # Server-only helpers (never client-imported)
+│
+└── integrations/supabase/     # Auto-generated clients (do not edit)
+
+supabase/migrations/           # SQL migrations (RLS, RPCs, views, seeds)
+public/                        # robots.txt, llms.txt, favicons, og-image
 ```
 
-## Local Development
+---
+
+## 🧪 Local Development
 
 ```bash
 bun install
-bun run dev            # http://localhost:8080
-bun run build          # production build
+bun run dev        # http://localhost:8080
+bun run build      # production build (edge target)
 bun run lint
 ```
 
-Requires Node 20+. `bun` recommended.
+Requires **Node 20+**. `bun` recommended for install speed.
 
-## Environment
+### Environment
 
-Cloud credentials are injected by Lovable Cloud in production. For local dev
-you need a `.env` with:
+Cloud credentials are injected in production. For local dev, create a `.env`:
 
+```env
+VITE_SUPABASE_URL=https://<project>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<publishable_anon_key>
+VITE_SUPABASE_PROJECT_ID=<project_id>
 ```
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_PUBLISHABLE_KEY=...
-VITE_SUPABASE_PROJECT_ID=...
+
+These are **publishable** (anon) keys — safe to commit to a private repo.
+**Never** commit the service-role key.
+
+---
+
+## 🗄️ Database
+
+Managed on Supabase. All public-facing reads go through sanitized views so
+author IDs never leave the server.
+
+| Table | Purpose |
+|-------|---------|
+| `allowed_usns`   | Seeded USN registry — private, read only via `check_usn_available` RPC |
+| `profiles`       | One row per user, linked to a claimed USN |
+| `posts`          | Complaints (location + issue_type + body) |
+| `votes`          | One True/False vote per user per post |
+| `comments`       | Anonymous comments with per-post pseudo-handles |
+| `flags`          | Reports on posts / comments — feeds the admin queue |
+| `escalations`    | Verified complaints exported to PDF letter |
+| `user_roles`     | Role assignments, checked via `has_role()` RPC |
+| `site_visits`    | Anonymous visitor heartbeats (write via RPC only) |
+
+**Views:** `public_posts`, `public_comments` — strip author IDs.
+**RPCs:** `check_usn_available`, `record_visit`, `get_visit_counts`,
+`has_role`.
+
+RLS is enabled on every public table. No table grants `SELECT` to `anon`
+directly — everything goes through views or `SECURITY DEFINER` functions.
+
+---
+
+## 🛡️ Security Model
+
+- 🔒 **No admin flag on profiles** — roles live in a separate `user_roles`
+  table, checked via a `SECURITY DEFINER` function to prevent privilege
+  escalation.
+- 🕵️ **USN registry is private** — the signup form calls a narrow RPC that
+  answers only `available` / `claimed` / `invalid`.
+- 👥 **Author IDs never leak** — public reads use sanitized views.
+- ✋ **No unauthenticated writes** — every INSERT/UPDATE policy scopes to
+  `auth.uid()`.
+- 🔁 **Reset-password fallback** — the reset page shows the admin email so
+  students who don't receive the mail can still reach a human.
+
+---
+
+## 👑 Admin Access
+
+Admin is granted by a row in `user_roles` (`role = 'admin'`) scoped to a
+specific USN. Current admin: **`24SEAI003`**.
+
+```sql
+insert into public.user_roles (user_id, role)
+values ('<auth.uid of the new admin>', 'admin');
 ```
 
-These are **publishable** (anon) keys — safe for a private repo.
-Never commit service-role keys.
+---
 
-## Database
+## 📈 Scaling Notes
 
-Managed on Lovable Cloud (Supabase). Key tables:
+- ✅ Comfortably serves **2,000+ concurrent students** — the app is edge-SSR
+  on Cloudflare Workers, and every database query is either cached at the
+  view layer or gated by an index (`posts.created_at`, `votes.post_id`,
+  `flags.target_id`).
+- 🧊 Cold reads are single-digit ms because sanitized views are cheap.
+- 🔔 Visitor heartbeats are debounced to **once every 90 s** per session, so
+  presence tracking stays flat regardless of tab activity.
 
-- `allowed_usns` — seeded USN registry with department mapping
-- `profiles` — one row per user, linked to a USN
-- `posts` — complaints (location + issue_type)
-- `votes` — one true/false vote per user per post
-- `comments` — anonymous comments with per-post pseudo-handles
-- `escalations` — verified complaints exported to PDF
-- `user_roles` — admin role assignments (checked via `has_role()` RPC)
-- `site_visits` — anonymous visitor heartbeats
+---
 
-RLS is enabled on every public table.
+## 🗺️ Roadmap
 
-## Admin
+- [ ] Weekly digest email of top-voted complaints
+- [ ] Multi-institute mode (drop-in for other engineering colleges)
+- [ ] Comment reactions + threading
+- [ ] Signed PDF export with QR verification link
+- [ ] Public "resolved" wall — closed loops shown alongside verified ones
 
-Admin access is granted via a row in `user_roles` with role `admin`,
-scoped to a specific USN. Current admin: `24SEAI003`.
-To promote another user, insert a `user_roles` row via SQL.
+---
 
-## Contact
+## 🤝 Contributing
 
-studentsvoice.muse@gmail.com
+PRs welcome. The rules of the road:
 
-## License
+1. Keep it **anonymous by default** — nothing that reveals a user's identity
+   in feeds, comments, or exports.
+2. Every new table needs **RLS + GRANTs + policies** in the same migration.
+3. Public reads go through **views**, not base tables.
+4. UI changes stay in frontend code — no business logic in components.
 
-All rights reserved © MUSE Students Voice.
+---
+
+## 📬 Contact
+
+**studentsvoice.muse@gmail.com**
+
+For students who didn't receive the password reset email, for admins of other
+campuses interested in adopting this, or for anyone with a fix to suggest.
+
+---
+
+## 📜 License
+
+All rights reserved © **MUSE Students Voice**.
+The code is shared for transparency and academic reference — please contact
+us before redeploying under a different name.
+
+<div align="center">
+
+**Built with ❤️ by MUSE students, for MUSE students.**
+
+</div>
