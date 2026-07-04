@@ -93,6 +93,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "Students Voice — MUSE",
+              url: "https://muse-studentsvoice.lovable.app",
+              email: "studentsvoice.muse@gmail.com",
+              description:
+                "Anonymous grievance platform for students of Mysore University School of Engineering (MUSE).",
+            },
+            {
+              "@type": "WebSite",
+              name: "Students Voice — MUSE",
+              url: "https://muse-studentsvoice.lovable.app",
+              inLanguage: "en",
+            },
+          ],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
