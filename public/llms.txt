@@ -9,6 +9,7 @@ Students sign in with a registered USN, post a complaint tagged by location and 
 - [Home](/): landing page with the latest public complaint feed and verified complaint count.
 - [Verified complaints](/verified): archive of complaints that reached the credibility threshold.
 - [How it works](/about): posting rules, quorum, verification threshold, and escalation flow.
+- [Complaint writing guide](/complaint-guide): how to structure an effective formal complaint to a university.
 - [Privacy & anonymity](/privacy): how USNs and identities are stored and protected.
 - [Terms of use](/terms): platform terms and content rules.
 
