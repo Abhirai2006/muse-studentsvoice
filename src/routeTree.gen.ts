@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MyComplaintsRouteImport } from './routes/my-complaints'
 import { Route as FeedRouteImport } from './routes/feed'
+import { Route as ComplaintGuideRouteImport } from './routes/complaint-guide'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -57,6 +58,11 @@ const FeedRoute = FeedRouteImport.update({
   path: '/feed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComplaintGuideRoute = ComplaintGuideRouteImport.update({
+  id: '/complaint-guide',
+  path: '/complaint-guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/complaint-guide': typeof ComplaintGuideRoute
   '/feed': typeof FeedRoute
   '/my-complaints': typeof MyComplaintsRoute
   '/privacy': typeof PrivacyRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/complaint-guide': typeof ComplaintGuideRoute
   '/feed': typeof FeedRoute
   '/my-complaints': typeof MyComplaintsRoute
   '/privacy': typeof PrivacyRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/complaint-guide': typeof ComplaintGuideRoute
   '/feed': typeof FeedRoute
   '/my-complaints': typeof MyComplaintsRoute
   '/privacy': typeof PrivacyRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/auth'
+    | '/complaint-guide'
     | '/feed'
     | '/my-complaints'
     | '/privacy'
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/auth'
+    | '/complaint-guide'
     | '/feed'
     | '/my-complaints'
     | '/privacy'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/auth'
+    | '/complaint-guide'
     | '/feed'
     | '/my-complaints'
     | '/privacy'
@@ -176,6 +188,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  ComplaintGuideRoute: typeof ComplaintGuideRoute
   FeedRoute: typeof FeedRoute
   MyComplaintsRoute: typeof MyComplaintsRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -237,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/complaint-guide': {
+      id: '/complaint-guide'
+      path: '/complaint-guide'
+      fullPath: '/complaint-guide'
+      preLoaderRoute: typeof ComplaintGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -280,6 +300,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  ComplaintGuideRoute: ComplaintGuideRoute,
   FeedRoute: FeedRoute,
   MyComplaintsRoute: MyComplaintsRoute,
   PrivacyRoute: PrivacyRoute,
