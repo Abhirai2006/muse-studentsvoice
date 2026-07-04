@@ -93,6 +93,7 @@ function FeedPage() {
 
   return (
     <SiteShell>
+      <h1 className="mb-4 font-serif text-2xl font-semibold">Student complaint feed</h1>
       <section className="mb-6 rounded-xl border border-border bg-card p-4">
         <h2 className="text-sm font-semibold">New complaint</h2>
         <p className="mt-1 text-xs text-muted-foreground">
