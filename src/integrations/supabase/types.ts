@@ -503,6 +503,13 @@ export type Database = {
         Args: { _author_id: string; _post_id: string }
         Returns: string
       }
+      get_visit_counts: {
+        Args: never
+        Returns: {
+          online_count: number
+          total_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -510,6 +517,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      record_visit: { Args: { _session_id: string }; Returns: undefined }
       resolve_posts: { Args: never; Returns: number }
     }
     Enums: {
