@@ -1,6 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/SiteShell";
 
+const FAQS: { q: string; a: string }[] = [
+  {
+    q: "How do I write a formal complaint letter to my university?",
+    a: "Stick to one issue, lead with the facts (what, where, when), attach or describe evidence, state the impact on students, and suggest a specific fix. Keep the tone factual and avoid personal attacks — describe the behaviour, not the person.",
+  },
+  {
+    q: "What should a university grievance letter include?",
+    a: "A clear subject line, the location and issue type, a short factual account of what happened with dates, supporting evidence (timetable, notice, photos), the impact on students, and a reasonable suggested resolution.",
+  },
+  {
+    q: "How long should a student complaint be?",
+    a: "Aim for 150–400 words. Long enough to establish facts and evidence, short enough that peers can read and vote quickly. Anything longer usually loses the reader.",
+  },
+  {
+    q: "Can I stay anonymous when I complain about a university issue?",
+    a: "On MUSE Students Voice, yes — your USN is never shown on posts, votes, or in the escalation letter sent to leadership. It is only used privately to prevent duplicate accounts.",
+  },
+  {
+    q: "What happens after I post a complaint on Students Voice?",
+    a: "Peers vote True or False. Once a post crosses the 30-vote quorum with 70% True votes, it is marked verified and included in the weekly escalation letter to the administration.",
+  },
+  {
+    q: "How do I improve the chance my complaint is verified?",
+    a: "Post one issue at a time, cite dates and locations, describe evidence, and explain the wider impact on students. Vague or personal posts rarely reach the verification threshold.",
+  },
+];
+
 export const Route = createFileRoute("/complaint-guide")({
   head: () => ({
     meta: [
@@ -14,6 +41,20 @@ export const Route = createFileRoute("/complaint-guide")({
       { name: "twitter:description", content: "Structure, tone, and evidence tips for writing a formal complaint that gets taken seriously by university leadership." },
     ],
     links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/complaint-guide" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQS.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }),
+      },
+    ],
   }),
   component: ComplaintGuide,
 });
@@ -76,6 +117,22 @@ Impact on students:
 Suggested fix:
 <one or two sentences>`}
         </pre>
+
+        <h2 id="faq" className="mt-8 text-base font-semibold">Frequently asked questions</h2>
+        <div className="not-prose mt-3 space-y-2">
+          {FAQS.map((f, i) => (
+            <details
+              key={i}
+              className="group rounded-lg border border-border bg-card p-3 open:bg-muted/30"
+            >
+              <summary className="cursor-pointer list-none text-sm font-medium marker:hidden [&::-webkit-details-marker]:hidden flex items-center justify-between gap-3">
+                <span>{f.q}</span>
+                <span className="text-muted-foreground transition-transform group-open:rotate-45 text-lg leading-none">+</span>
+              </summary>
+              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
+            </details>
+          ))}
+        </div>
       </article>
     </SiteShell>
   );
