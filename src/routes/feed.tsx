@@ -94,6 +94,19 @@ function FeedPage() {
   return (
     <SiteShell>
       <h1 className="mb-4 font-serif text-2xl font-semibold">Student complaint feed</h1>
+      <Link
+        to="/complaint-guide"
+        className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-border bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3 text-sm transition hover:border-primary/40 hover:from-primary/15"
+      >
+        <span className="flex items-center gap-2">
+          <span aria-hidden className="text-lg">📝</span>
+          <span>
+            <span className="font-medium text-foreground">New here?</span>{" "}
+            <span className="text-muted-foreground">Read the 5-step guide to writing a complaint that gets verified.</span>
+          </span>
+        </span>
+        <span className="text-primary shrink-0">Read guide →</span>
+      </Link>
       <section className="mb-6 rounded-xl border border-border bg-card p-4">
         <h2 className="text-sm font-semibold">New complaint</h2>
         <p className="mt-1 text-xs text-muted-foreground">
@@ -139,6 +152,13 @@ function FeedPage() {
           <span className="text-xs text-muted-foreground">{body.length}/4000 · max 3 posts/day</span>
           <Button onClick={submit} disabled={busy}>{busy ? "Posting…" : "Post complaint"}</Button>
         </div>
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          Not sure how to phrase it? See{" "}
+          <Link to="/complaint-guide" className="underline underline-offset-2 hover:text-foreground">
+            how to write an effective complaint
+          </Link>
+          .
+        </p>
       </section>
 
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-end">
