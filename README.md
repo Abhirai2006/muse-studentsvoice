@@ -10,6 +10,7 @@ cross the quorum get auto-drafted into a formal PDF letter to the Director
 and Vice Chancellor.
 
 [![Live Site](https://img.shields.io/badge/Live-muse--studentsvoice.lovable.app-6d28d9?style=for-the-badge)](https://muse-studentsvoice.lovable.app)
+[![CI](https://img.shields.io/github/actions/workflow/status/Abhirai2006/muse-students-voice/ci.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/Abhirai2006/muse-students-voice/actions/workflows/ci.yml)
 [![Contact](https://img.shields.io/badge/Contact-studentsvoice.muse%40gmail.com-ea4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:studentsvoice.muse@gmail.com)
 
 <p>
@@ -180,7 +181,8 @@ Requires **Node 20+**. `bun` recommended for install speed.
 
 ### Environment
 
-Cloud credentials are injected in production. For local dev, create a `.env`:
+Cloud credentials are injected in production. For local dev, copy `.env.example`
+to `.env` and fill in only publishable client values:
 
 ```env
 VITE_SUPABASE_URL=https://<project>.supabase.co
@@ -188,8 +190,9 @@ VITE_SUPABASE_PUBLISHABLE_KEY=<publishable_anon_key>
 VITE_SUPABASE_PROJECT_ID=<project_id>
 ```
 
-These are **publishable** (anon) keys — safe to commit to a private repo.
-**Never** commit the service-role key.
+These are **publishable** client keys, but `.env` should stay local so private
+values never get committed by accident. **Never** commit service-role keys,
+SMTP credentials, database passwords, or personal tokens.
 
 ---
 
@@ -270,7 +273,8 @@ values ('<auth.uid of the new admin>', 'admin');
 
 ## 🤝 Contributing
 
-PRs welcome. The rules of the road:
+PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full checklist.
+The rules of the road:
 
 1. Keep it **anonymous by default** — nothing that reveals a user's identity
    in feeds, comments, or exports.
@@ -291,9 +295,9 @@ campuses interested in adopting this, or for anyone with a fix to suggest.
 
 ## 📜 License
 
-All rights reserved © **MUSE Students Voice**.
-The code is shared for transparency and academic reference — please contact
-us before redeploying under a different name.
+This project is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+The code is shared for transparency and academic reference; commercial use is
+not permitted without separate permission.
 
 <div align="center">
 
