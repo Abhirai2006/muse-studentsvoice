@@ -203,6 +203,46 @@ export type Database = {
           },
         ]
       }
+      post_vote_tallies: {
+        Row: {
+          false_count: number
+          post_id: string
+          true_count: number
+        }
+        Insert: {
+          false_count?: number
+          post_id: string
+          true_count?: number
+        }
+        Update: {
+          false_count?: number
+          post_id?: string
+          true_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_vote_tallies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "post_tallies"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_vote_tallies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_vote_tallies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "public_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string
