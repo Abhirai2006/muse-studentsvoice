@@ -157,7 +157,9 @@ function RootComponent() {
               onDone={() => {
                 try {
                   sessionStorage.setItem("splash_seen", "1");
-                } catch { /* noop */ }
+                } catch {
+                  /* noop */
+                }
                 setShowSplash(false);
               }}
             />
