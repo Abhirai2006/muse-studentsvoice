@@ -27,7 +27,7 @@ and Vice Chancellor.
 ---
 
 <div align="center">
-  <img src="docs/posters/muse-students-voice-poster.png" alt="MUSE Students Voice campus poster" width="380" />
+  <img src="docs/posters/StudentsVoice - MUSE.png" alt="MUSE Students Voice campus poster" width="380" />
 </div>
 
 ---
