@@ -539,8 +539,13 @@ export type Database = {
         Args: { _fingerprint?: string; _ip_hash?: string; _usn: string }
         Returns: undefined
       }
+      comment_is_mine_by_id: { Args: { _comment_id: string }; Returns: boolean }
       comment_pseudo_handle: {
         Args: { _author_id: string; _post_id: string }
+        Returns: string
+      }
+      comment_pseudo_handle_by_id: {
+        Args: { _comment_id: string }
         Returns: string
       }
       get_visit_counts: {
