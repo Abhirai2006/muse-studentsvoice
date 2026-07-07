@@ -26,6 +26,12 @@ and Vice Chancellor.
 
 ---
 
+<div align="center">
+  <img src="docs/posters/muse-students-voice-poster.png" alt="MUSE Students Voice campus poster" width="380" />
+</div>
+
+---
+
 ## ✨ Why this exists
 
 Every campus has the same story: broken labs, unsafe walkways, unheard voices.
@@ -58,7 +64,11 @@ complaints invite retaliation.
 - 🚩 **One-tap flag** for spam, personal attacks, or false claims — flagged
   posts land in the admin queue automatically.
 - 📰 **Public read-only feed** — parents, alumni, and the press can browse
-  without signing up.
+  without signing up. Includes **category filters** (location + issue type),
+  keyword search, and sort by Newest / Most Voted / Trending (24 h).
+- 👀 **Public comments** — visitors without an account can read every
+  comment thread through the sanitized `public_comments` view; only posting
+  requires a USN-linked account.
 - 🌗 **Midnight Letterhead** dark mode — a warm, paper-like palette designed
   for long reads.
 
