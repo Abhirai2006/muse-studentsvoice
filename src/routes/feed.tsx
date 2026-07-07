@@ -12,26 +12,46 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
   fetchPublicPosts,
-  LOCATIONS, LOCATION_LABEL, type Location,
-  ISSUE_TYPES, ISSUE_LABEL, type IssueType,
+  LOCATIONS,
+  LOCATION_LABEL,
+  type Location,
+  ISSUE_TYPES,
+  ISSUE_LABEL,
+  type IssueType,
 } from "@/lib/posts";
 
 export const Route = createFileRoute("/feed")({
   head: () => ({
     meta: [
       { title: "Complaint feed — MUSE Students Voice" },
-      { name: "description", content: "Post a new complaint or vote on others. Signed-in feed for verified MUSE students with filters by location and issue type." },
+      {
+        name: "description",
+        content:
+          "Post a new complaint or vote on others. Signed-in feed for verified MUSE students with filters by location and issue type.",
+      },
       { property: "og:title", content: "Complaint feed — MUSE Students Voice" },
-      { property: "og:description", content: "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type." },
+      {
+        property: "og:description",
+        content:
+          "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type.",
+      },
       { name: "twitter:title", content: "Complaint feed — MUSE Students Voice" },
-      { name: "twitter:description", content: "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type." },
+      {
+        name: "twitter:description",
+        content:
+          "Signed-in feed where MUSE students post complaints, vote True or False, and filter issues by location and type.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
   component: FeedPage,
 });
 
-const bodySchema = z.string().trim().min(10, "At least 10 characters").max(4000, "Keep it under 4000 characters");
+const bodySchema = z
+  .string()
+  .trim()
+  .min(10, "At least 10 characters")
+  .max(4000, "Keep it under 4000 characters");
 
 function FeedPage() {
   const { user, profile, loading } = useAuth();
@@ -56,7 +76,9 @@ function FeedPage() {
       <SiteShell>
         <div className="rounded-lg border border-border bg-card p-6 text-center">
           <p className="text-sm">You need to sign in to post or vote.</p>
-          <Link to="/auth" className="mt-3 inline-block"><Button>Sign in</Button></Link>
+          <Link to="/auth" className="mt-3 inline-block">
+            <Button>Sign in</Button>
+          </Link>
         </div>
       </SiteShell>
     );
@@ -66,7 +88,9 @@ function FeedPage() {
       <SiteShell>
         <div className="rounded-lg border border-border bg-card p-6 text-center">
           <p className="text-sm">Link a USN to your account first.</p>
-          <Link to="/auth" className="mt-3 inline-block"><Button>Link USN</Button></Link>
+          <Link to="/auth" className="mt-3 inline-block">
+            <Button>Link USN</Button>
+          </Link>
         </div>
       </SiteShell>
     );
@@ -74,16 +98,32 @@ function FeedPage() {
 
   async function submit() {
     const parsed = bodySchema.safeParse(body);
-    if (!parsed.success) { toast.error(parsed.error.errors[0].message); return; }
-    if (!location) { toast.error("Pick a location."); return; }
-    if (!issueType) { toast.error("Pick an issue type."); return; }
+    if (!parsed.success) {
+      toast.error(parsed.error.errors[0].message);
+      return;
+    }
+    if (!location) {
+      toast.error("Pick a location.");
+      return;
+    }
+    if (!issueType) {
+      toast.error("Pick an issue type.");
+      return;
+    }
     if (!user) return;
     setBusy(true);
-    const { error } = await supabase
-      .from("posts")
-      .insert({ author_id: user.id, body: parsed.data, location, issue_type: issueType, category: "other" });
+    const { error } = await supabase.from("posts").insert({
+      author_id: user.id,
+      body: parsed.data,
+      location,
+      issue_type: issueType,
+      category: "other",
+    });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     setBody("");
     setLocation("");
     setIssueType("");
@@ -99,10 +139,14 @@ function FeedPage() {
         className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-border bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-4 py-3 text-sm transition hover:border-primary/40 hover:from-primary/15"
       >
         <span className="flex items-center gap-2">
-          <span aria-hidden className="text-lg">📝</span>
+          <span aria-hidden className="text-lg">
+            📝
+          </span>
           <span>
             <span className="font-medium text-foreground">New here?</span>{" "}
-            <span className="text-muted-foreground">Read the 5-step guide to writing a complaint that gets verified.</span>
+            <span className="text-muted-foreground">
+              Read the 5-step guide to writing a complaint that gets verified.
+            </span>
           </span>
         </span>
         <span className="text-primary shrink-0">Read guide →</span>
@@ -110,7 +154,8 @@ function FeedPage() {
       <section className="mb-6 rounded-xl border border-border bg-card p-4">
         <h2 className="text-sm font-semibold">New complaint</h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Posting as <span className="font-mono">{profile?.usn}</span> — your USN is never shown to other users.
+          Posting as <span className="font-mono">{profile?.usn}</span> — your USN is never shown to
+          other users.
         </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           <div>
@@ -122,7 +167,9 @@ function FeedPage() {
             >
               <option value="">Select location…</option>
               {LOCATIONS.map((l) => (
-                <option key={l} value={l}>{LOCATION_LABEL[l]}</option>
+                <option key={l} value={l}>
+                  {LOCATION_LABEL[l]}
+                </option>
               ))}
             </select>
           </div>
@@ -135,7 +182,9 @@ function FeedPage() {
             >
               <option value="">Select issue type…</option>
               {ISSUE_TYPES.map((i) => (
-                <option key={i} value={i}>{ISSUE_LABEL[i]}</option>
+                <option key={i} value={i}>
+                  {ISSUE_LABEL[i]}
+                </option>
               ))}
             </select>
           </div>
@@ -149,12 +198,19 @@ function FeedPage() {
           maxLength={4000}
         />
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">{body.length}/4000 · max 3 posts/day</span>
-          <Button onClick={submit} disabled={busy}>{busy ? "Posting…" : "Post complaint"}</Button>
+          <span className="text-xs text-muted-foreground">
+            {body.length}/4000 · max 3 posts/day
+          </span>
+          <Button onClick={submit} disabled={busy}>
+            {busy ? "Posting…" : "Post complaint"}
+          </Button>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">
           Not sure how to phrase it? See{" "}
-          <Link to="/complaint-guide" className="underline underline-offset-2 hover:text-foreground">
+          <Link
+            to="/complaint-guide"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
             how to write an effective complaint
           </Link>
           .
@@ -164,7 +220,11 @@ function FeedPage() {
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-end">
         <div className="grow">
           <label className="text-xs font-medium text-muted-foreground">Search</label>
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Find by keyword…" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Find by keyword…"
+          />
         </div>
         <div>
           <label className="text-xs font-medium text-muted-foreground">Location</label>
@@ -175,7 +235,9 @@ function FeedPage() {
           >
             <option value="all">All locations</option>
             {LOCATIONS.map((l) => (
-              <option key={l} value={l}>{LOCATION_LABEL[l]}</option>
+              <option key={l} value={l}>
+                {LOCATION_LABEL[l]}
+              </option>
             ))}
           </select>
         </div>
@@ -188,7 +250,9 @@ function FeedPage() {
           >
             <option value="all">All issues</option>
             {ISSUE_TYPES.map((i) => (
-              <option key={i} value={i}>{ISSUE_LABEL[i]}</option>
+              <option key={i} value={i}>
+                {ISSUE_LABEL[i]}
+              </option>
             ))}
           </select>
         </div>
@@ -208,28 +272,45 @@ function FeedPage() {
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading…</p>
-      ) : (() => {
+      ) : (
+        (() => {
           const q = search.trim().toLowerCase();
-          let list = (data ?? []).filter((p) =>
-            (filterLoc === "all" || p.location === filterLoc) &&
-            (filterIssue === "all" || p.issue_type === filterIssue) &&
-            (q === "" || p.body.toLowerCase().includes(q)),
+          let list = (data ?? []).filter(
+            (p) =>
+              (filterLoc === "all" || p.location === filterLoc) &&
+              (filterIssue === "all" || p.issue_type === filterIssue) &&
+              (q === "" || p.body.toLowerCase().includes(q)),
           );
           if (sort === "most_voted") {
-            list = [...list].sort((a, b) => (b.true_count + b.false_count) - (a.true_count + a.false_count));
+            list = [...list].sort(
+              (a, b) => b.true_count + b.false_count - (a.true_count + a.false_count),
+            );
           } else if (sort === "trending") {
             const cutoff = Date.now() - 24 * 60 * 60 * 1000;
             list = [...list].sort((a, b) => {
-              const ta = new Date(a.created_at).getTime() > cutoff ? (a.true_count + a.false_count) * 2 : (a.true_count + a.false_count);
-              const tb = new Date(b.created_at).getTime() > cutoff ? (b.true_count + b.false_count) * 2 : (b.true_count + b.false_count);
+              const ta =
+                new Date(a.created_at).getTime() > cutoff
+                  ? (a.true_count + a.false_count) * 2
+                  : a.true_count + a.false_count;
+              const tb =
+                new Date(b.created_at).getTime() > cutoff
+                  ? (b.true_count + b.false_count) * 2
+                  : b.true_count + b.false_count;
               return tb - ta;
             });
           }
           if (list.length === 0) {
             return <p className="text-sm text-muted-foreground">No matching complaints.</p>;
           }
-          return <div className="space-y-3">{list.map((p) => <PostCard key={p.id} post={p} compact />)}</div>;
-        })()}
+          return (
+            <div className="space-y-3">
+              {list.map((p) => (
+                <PostCard key={p.id} post={p} compact />
+              ))}
+            </div>
+          );
+        })()
+      )}
     </SiteShell>
   );
 }

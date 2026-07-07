@@ -32,13 +32,25 @@ export const Route = createFileRoute("/complaint-guide")({
   head: () => ({
     meta: [
       { title: "How to write an effective university complaint letter — MUSE Students Voice" },
-      { name: "description", content: "A practical guide for MUSE students: how to structure a formal grievance, present facts, provide evidence, and improve your chances of verification." },
+      {
+        name: "description",
+        content:
+          "A practical guide for MUSE students: how to structure a formal grievance, present facts, provide evidence, and improve your chances of verification.",
+      },
       { property: "og:title", content: "How to write an effective university complaint letter" },
-      { property: "og:description", content: "Structure, tone, and evidence tips for writing a formal complaint that gets taken seriously by university leadership." },
+      {
+        property: "og:description",
+        content:
+          "Structure, tone, and evidence tips for writing a formal complaint that gets taken seriously by university leadership.",
+      },
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/complaint-guide" },
       { property: "og:type", content: "article" },
       { name: "twitter:title", content: "How to write an effective university complaint letter" },
-      { name: "twitter:description", content: "Structure, tone, and evidence tips for writing a formal complaint that gets taken seriously by university leadership." },
+      {
+        name: "twitter:description",
+        content:
+          "Structure, tone, and evidence tips for writing a formal complaint that gets taken seriously by university leadership.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/complaint-guide" }],
     scripts: [
@@ -63,7 +75,9 @@ function ComplaintGuide() {
   return (
     <SiteShell>
       <article className="prose prose-sm dark:prose-invert max-w-none">
-        <h1 className="font-serif text-2xl font-semibold">How to write an effective complaint letter to a university</h1>
+        <h1 className="font-serif text-2xl font-semibold">
+          How to write an effective complaint letter to a university
+        </h1>
         <p className="text-sm text-muted-foreground">
           A short, practical guide for MUSE students. Well-structured complaints are more likely to
           reach the 70% peer-verification threshold on Students Voice and be taken seriously by
@@ -102,7 +116,7 @@ function ComplaintGuide() {
 
         <h2 className="mt-6 text-base font-semibold">Template</h2>
         <pre className="text-xs whitespace-pre-wrap rounded-md border border-border bg-muted/40 p-3">
-{`Location: <e.g. Physics lab, Year 2 block>
+          {`Location: <e.g. Physics lab, Year 2 block>
 Issue type: <infrastructure / cleanliness / faculty conduct / safety / academic / administrative>
 
 What happened:
@@ -118,7 +132,9 @@ Suggested fix:
 <one or two sentences>`}
         </pre>
 
-        <h2 id="faq" className="mt-8 text-base font-semibold">Frequently asked questions</h2>
+        <h2 id="faq" className="mt-8 text-base font-semibold">
+          Frequently asked questions
+        </h2>
         <div className="not-prose mt-3 space-y-2">
           {FAQS.map((f, i) => (
             <details
@@ -127,7 +143,9 @@ Suggested fix:
             >
               <summary className="cursor-pointer list-none text-sm font-medium marker:hidden [&::-webkit-details-marker]:hidden flex items-center justify-between gap-3">
                 <span>{f.q}</span>
-                <span className="text-muted-foreground transition-transform group-open:rotate-45 text-lg leading-none">+</span>
+                <span className="text-muted-foreground transition-transform group-open:rotate-45 text-lg leading-none">
+                  +
+                </span>
               </summary>
               <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
             </details>

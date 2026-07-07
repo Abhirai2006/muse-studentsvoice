@@ -22,7 +22,9 @@ export function PostCardSkeleton() {
 export function PostCardSkeletonList({ count = 3 }: { count?: number }) {
   return (
     <div className="space-y-3">
-      {Array.from({ length: count }).map((_, i) => <PostCardSkeleton key={i} />)}
+      {Array.from({ length: count }).map((_, i) => (
+        <PostCardSkeleton key={i} />
+      ))}
     </div>
   );
 }

@@ -22,11 +22,7 @@ export function SplashScreen({ onDone }: { onDone?: () => void }) {
       aria-hidden={leaving}
     >
       <div className="absolute inset-0">
-        <img
-          src={building.url}
-          alt=""
-          className="h-full w-full object-cover opacity-60"
-        />
+        <img src={building.url} alt="" className="h-full w-full object-cover opacity-60" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/45 to-background/85" />
       </div>
       <div className="relative flex flex-col items-center text-center">
@@ -49,8 +45,7 @@ export function SplashScreen({ onDone }: { onDone?: () => void }) {
                 "conic-gradient(from 0deg, hsl(var(--primary) / 0.9), transparent 40%, hsl(var(--primary) / 0.6) 70%, transparent 100%)",
               WebkitMask:
                 "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
-              mask:
-                "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
+              mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
             }}
           />
           {/* Logo disc */}

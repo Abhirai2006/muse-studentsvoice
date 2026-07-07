@@ -34,7 +34,11 @@ export function PostCard({ post, compact }: { post: PublicPost; compact?: boolea
           </span>
         )}
       </div>
-      <p className={compact ? "line-clamp-3 whitespace-pre-wrap text-sm" : "whitespace-pre-wrap text-sm"}>
+      <p
+        className={
+          compact ? "line-clamp-3 whitespace-pre-wrap text-sm" : "whitespace-pre-wrap text-sm"
+        }
+      >
         {post.body}
       </p>
       <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
@@ -47,9 +51,7 @@ export function PostCard({ post, compact }: { post: PublicPost; compact?: boolea
         <span className="inline-flex items-center gap-1">
           <MessageCircle className="h-3.5 w-3.5" /> {post.comment_count}
         </span>
-        {total > 0 && (
-          <span className="ml-auto">{truePct}% mark this true</span>
-        )}
+        {total > 0 && <span className="ml-auto">{truePct}% mark this true</span>}
       </div>
     </Link>
   );

@@ -11,7 +11,10 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Set a new password — MUSE Students Voice" },
-      { name: "description", content: "Choose a new password for your MUSE Students Voice account." },
+      {
+        name: "description",
+        content: "Choose a new password for your MUSE Students Voice account.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -45,8 +48,14 @@ function ResetPasswordPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password.length < 8) { toast.error("Password must be at least 8 characters."); return; }
-    if (password !== confirm) { toast.error("Passwords don't match."); return; }
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters.");
+      return;
+    }
+    if (password !== confirm) {
+      toast.error("Passwords don't match.");
+      return;
+    }
     setBusy(true);
     try {
       const { error } = await supabase.auth.updateUser({ password });
@@ -65,33 +74,57 @@ function ResetPasswordPage() {
     <SiteShell>
       <div className="mx-auto max-w-sm rounded-xl border border-border bg-card p-6">
         <h1 className="font-serif text-xl font-semibold">Set a new password</h1>
-        {ready === "checking" && <p className="mt-3 text-sm text-muted-foreground">Verifying reset link…</p>}
+        {ready === "checking" && (
+          <p className="mt-3 text-sm text-muted-foreground">Verifying reset link…</p>
+        )}
         {ready === "invalid" && (
           <p className="mt-3 text-sm">
             This reset link is invalid or has expired.{" "}
-            <Link to="/auth" className="underline">Request a new one</Link>.
+            <Link to="/auth" className="underline">
+              Request a new one
+            </Link>
+            .
           </p>
         )}
         <p className="mt-4 rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
           Didn&apos;t receive the reset email? Check your spam folder, or contact the admin at{" "}
-          <a href="mailto:studentsvoice.muse@gmail.com" className="underline">studentsvoice.muse@gmail.com</a>.
+          <a href="mailto:studentsvoice.muse@gmail.com" className="underline">
+            studentsvoice.muse@gmail.com
+          </a>
+          .
         </p>
         {ready === "ok" && !done && (
           <form onSubmit={handleSubmit} className="mt-4 space-y-3">
             <div>
               <Label htmlFor="np">New password</Label>
-              <Input id="np" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} autoComplete="new-password" />
+              <Input
+                id="np"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                autoComplete="new-password"
+              />
             </div>
             <div>
               <Label htmlFor="cp">Confirm password</Label>
-              <Input id="cp" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} autoComplete="new-password" />
+              <Input
+                id="cp"
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                required
+                minLength={8}
+                autoComplete="new-password"
+              />
             </div>
-            <Button type="submit" disabled={busy} className="w-full">{busy ? "Updating…" : "Update password"}</Button>
+            <Button type="submit" disabled={busy} className="w-full">
+              {busy ? "Updating…" : "Update password"}
+            </Button>
           </form>
         )}
-        {done && (
-          <p className="mt-3 text-sm">Password updated. Redirecting you to sign in…</p>
-        )}
+        {done && <p className="mt-3 text-sm">Password updated. Redirecting you to sign in…</p>}
       </div>
     </SiteShell>
   );

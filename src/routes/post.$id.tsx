@@ -54,8 +54,16 @@ export const Route = createFileRoute("/post/$id")({
               url,
               author: { "@type": "Person", name: "Anonymous MUSE student" },
               interactionStatistic: [
-                { "@type": "InteractionCounter", interactionType: "https://schema.org/LikeAction", userInteractionCount: post.true_count },
-                { "@type": "InteractionCounter", interactionType: "https://schema.org/CommentAction", userInteractionCount: post.comment_count },
+                {
+                  "@type": "InteractionCounter",
+                  interactionType: "https://schema.org/LikeAction",
+                  userInteractionCount: post.true_count,
+                },
+                {
+                  "@type": "InteractionCounter",
+                  interactionType: "https://schema.org/CommentAction",
+                  userInteractionCount: post.comment_count,
+                },
               ],
             }),
           },
@@ -99,7 +107,12 @@ function PostDetailPage() {
     queryKey: ["owns", id, user?.id],
     queryFn: async () => {
       if (!user) return false;
-      const { data } = await supabase.from("posts").select("id").eq("id", id).eq("author_id", user.id).maybeSingle();
+      const { data } = await supabase
+        .from("posts")
+        .select("id")
+        .eq("id", id)
+        .eq("author_id", user.id)
+        .maybeSingle();
       return !!data;
     },
     enabled: !!user,
@@ -114,8 +127,18 @@ function PostDetailPage() {
   const [editing, setEditing] = useState(false);
   const [editBody, setEditBody] = useState("");
 
-  if (post.isLoading) return <SiteShell><p className="text-sm text-muted-foreground">Loading…</p></SiteShell>;
-  if (!post.data) return <SiteShell><p>Not found.</p></SiteShell>;
+  if (post.isLoading)
+    return (
+      <SiteShell>
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      </SiteShell>
+    );
+  if (!post.data)
+    return (
+      <SiteShell>
+        <p>Not found.</p>
+      </SiteShell>
+    );
 
   const p = post.data;
   const total = p.true_count + p.false_count;
@@ -125,7 +148,10 @@ function PostDetailPage() {
   const locked = p.status === "verified_true";
 
   async function vote(value: boolean) {
-    if (!user || !profile) { toast.error("Sign in with your USN to vote."); return; }
+    if (!user || !profile) {
+      toast.error("Sign in with your USN to vote.");
+      return;
+    }
     try {
       if (myVote.data === value) {
         await clearVote(id, user.id);
@@ -135,37 +161,56 @@ function PostDetailPage() {
       qc.invalidateQueries({ queryKey: ["myvote", id, user.id] });
       qc.invalidateQueries({ queryKey: ["post", id] });
       qc.invalidateQueries({ queryKey: ["public_posts"] });
-    } catch (e) { toast.error((e as Error).message); }
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   }
 
   async function addComment() {
     if (!user) return;
     const body = comment.trim();
     if (body.length < 1) return;
-    const { error } = await supabase.from("comments").insert({ post_id: id, author_id: user.id, body });
-    if (error) { toast.error(error.message); return; }
+    const { error } = await supabase
+      .from("comments")
+      .insert({ post_id: id, author_id: user.id, body });
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     setComment("");
     qc.invalidateQueries({ queryKey: ["comments", id] });
     qc.invalidateQueries({ queryKey: ["post", id] });
   }
 
   async function deleteComment(commentId: string) {
-    const { error } = await supabase.from("comments").update({ deleted_at: new Date().toISOString() }).eq("id", commentId);
-    if (error) { toast.error(error.message); return; }
+    const { error } = await supabase
+      .from("comments")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", commentId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     qc.invalidateQueries({ queryKey: ["comments", id] });
   }
 
   async function deletePost() {
     if (!confirm("Delete this complaint?")) return;
     const { error } = await supabase.from("posts").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Deleted.");
     navigate({ to: "/feed" });
   }
 
   async function saveEdit() {
     const { error } = await supabase.from("posts").update({ body: editBody }).eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Updated. Votes were reset to keep things fair.");
     setEditing(false);
     qc.invalidateQueries({ queryKey: ["post", id] });
@@ -173,7 +218,10 @@ function PostDetailPage() {
   }
 
   async function reportPost() {
-    if (!user || !profile) { toast.error("Sign in to flag a post."); return; }
+    if (!user || !profile) {
+      toast.error("Sign in to flag a post.");
+      return;
+    }
     const reason = window.prompt(
       "Why are you flagging this? (spam / abuse / defamation / offtopic / other)",
       "spam",
@@ -181,17 +229,24 @@ function PostDetailPage() {
     if (!reason) return;
     const r = reason.trim().toLowerCase();
     const allowed = ["spam", "abuse", "defamation", "offtopic", "other"];
-    if (!allowed.includes(r)) { toast.error("Use one of: spam, abuse, defamation, offtopic, other."); return; }
+    if (!allowed.includes(r)) {
+      toast.error("Use one of: spam, abuse, defamation, offtopic, other.");
+      return;
+    }
     try {
       await flagPost(id, user.id, r as never);
       toast.success("Reported. An admin will review.");
       qc.invalidateQueries({ queryKey: ["myflag", id, user.id] });
-    } catch (e) { toast.error((e as Error).message); }
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   }
 
   return (
     <SiteShell>
-      <Link to="/" className="text-xs text-muted-foreground hover:underline">← Back to feed</Link>
+      <Link to="/" className="text-xs text-muted-foreground hover:underline">
+        ← Back to feed
+      </Link>
 
       <article className="mt-4 rounded-xl border border-border bg-card p-6">
         <h1 className="sr-only">Complaint #{id.slice(0, 6)} — MUSE Students Voice</h1>
@@ -216,10 +271,19 @@ function PostDetailPage() {
         </div>
         {editing ? (
           <div className="space-y-2">
-            <Textarea value={editBody} onChange={(e) => setEditBody(e.target.value)} rows={6} maxLength={4000} />
+            <Textarea
+              value={editBody}
+              onChange={(e) => setEditBody(e.target.value)}
+              rows={6}
+              maxLength={4000}
+            />
             <div className="flex gap-2">
-              <Button size="sm" onClick={saveEdit}>Save</Button>
-              <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>Cancel</Button>
+              <Button size="sm" onClick={saveEdit}>
+                Save
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
+                Cancel
+              </Button>
             </div>
           </div>
         ) : (
@@ -228,7 +292,14 @@ function PostDetailPage() {
 
         {owns.data && !locked && !editing && (
           <div className="mt-4 flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => { setEditBody(p.body); setEditing(true); }}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setEditBody(p.body);
+                setEditing(true);
+              }}
+            >
               <Pencil className="mr-1 h-3 w-3" /> Edit
             </Button>
             <Button size="sm" variant="outline" onClick={deletePost}>
@@ -270,26 +341,36 @@ function PostDetailPage() {
         <div className="mt-4 rounded-md border border-border/60 bg-muted/30 p-3 text-xs">
           {total === 0 ? (
             <p className="text-muted-foreground">
-              No votes yet. Quorum is <strong>{QUORUM} votes</strong>; a post is verified at ≥{THRESHOLD_PCT}% true and removed at ≥{THRESHOLD_PCT}% false.
+              No votes yet. Quorum is <strong>{QUORUM} votes</strong>; a post is verified at ≥
+              {THRESHOLD_PCT}% true and removed at ≥{THRESHOLD_PCT}% false.
             </p>
           ) : (
             <>
               <div className="mb-1 flex justify-between font-medium">
-                <span>{truePct}% true · {p.true_count}</span>
-                <span>{falsePct}% false · {p.false_count}</span>
+                <span>
+                  {truePct}% true · {p.true_count}
+                </span>
+                <span>
+                  {falsePct}% false · {p.false_count}
+                </span>
               </div>
               <div className="flex h-1.5 overflow-hidden rounded-full bg-border">
                 <div className="bg-primary" style={{ width: `${truePct}%` }} />
                 <div className="bg-destructive" style={{ width: `${falsePct}%` }} />
               </div>
               <p className="mt-2 text-muted-foreground">
-                {locked
-                  ? "Verified and escalated."
-                  : p.status === "deleted_false"
-                    ? "Community marked this false."
-                    : needed > 0
-                      ? <>Needs <strong>{needed}</strong> more vote{needed === 1 ? "" : "s"} to reach the {QUORUM}-vote quorum.</>
-                      : <>Quorum reached. Will resolve at ≥{THRESHOLD_PCT}% on either side.</>}
+                {locked ? (
+                  "Verified and escalated."
+                ) : p.status === "deleted_false" ? (
+                  "Community marked this false."
+                ) : needed > 0 ? (
+                  <>
+                    Needs <strong>{needed}</strong> more vote{needed === 1 ? "" : "s"} to reach the{" "}
+                    {QUORUM}-vote quorum.
+                  </>
+                ) : (
+                  <>Quorum reached. Will resolve at ≥{THRESHOLD_PCT}% on either side.</>
+                )}
               </p>
             </>
           )}
@@ -311,12 +392,17 @@ function PostDetailPage() {
               maxLength={2000}
             />
             <div className="mt-2 flex justify-end">
-              <Button size="sm" onClick={addComment} disabled={!comment.trim()}>Post</Button>
+              <Button size="sm" onClick={addComment} disabled={!comment.trim()}>
+                Post
+              </Button>
             </div>
           </div>
         ) : (
           <p className="mb-4 text-xs text-muted-foreground">
-            <Link to="/auth" className="underline">Sign in</Link> to comment.
+            <Link to="/auth" className="underline">
+              Sign in
+            </Link>{" "}
+            to comment.
           </p>
         )}
 
@@ -327,7 +413,10 @@ function PostDetailPage() {
           {comments.data?.map((c) => (
             <li key={c.id} className="rounded-md border border-border bg-card p-3">
               <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
-                <span className="font-mono">{c.pseudo_handle}{c.is_mine && " · you"}</span>
+                <span className="font-mono">
+                  {c.pseudo_handle}
+                  {c.is_mine && " · you"}
+                </span>
                 <span>{formatDistanceToNow(new Date(c.created_at), { addSuffix: true })}</span>
               </div>
               <p className="whitespace-pre-wrap text-sm">{c.body}</p>

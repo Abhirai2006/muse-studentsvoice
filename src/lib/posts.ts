@@ -98,7 +98,11 @@ export async function fetchPublicPosts(opts?: { status?: "open" | "verified_true
 }
 
 export async function fetchPublicPost(id: string) {
-  const { data, error } = await supabase.from("public_posts").select("*").eq("id", id).maybeSingle();
+  const { data, error } = await supabase
+    .from("public_posts")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
   if (error) throw error;
   return data as PublicPost | null;
 }
@@ -141,7 +145,11 @@ export async function castVote(postId: string, userId: string, value: boolean) {
 }
 
 export async function clearVote(postId: string, userId: string) {
-  const { error } = await supabase.from("votes").delete().eq("post_id", postId).eq("voter_id", userId);
+  const { error } = await supabase
+    .from("votes")
+    .delete()
+    .eq("post_id", postId)
+    .eq("voter_id", userId);
   if (error) throw error;
 }
 
