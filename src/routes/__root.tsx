@@ -155,7 +155,9 @@ function RootComponent() {
           {showSplash && (
             <SplashScreen
               onDone={() => {
-                try { sessionStorage.setItem("splash_seen", "1"); } catch {}
+                try {
+                  sessionStorage.setItem("splash_seen", "1");
+                } catch {}
                 setShowSplash(false);
               }}
             />

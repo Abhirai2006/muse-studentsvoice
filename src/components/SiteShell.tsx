@@ -13,29 +13,55 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="border-b border-border bg-card/60 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
-          <Link to="/" className="flex items-center gap-2 font-serif text-lg font-semibold text-primary">
-            <img src={wolfLogo} alt="MUSE Students Voice" width={32} height={32} className="h-8 w-8 object-contain dark:brightness-0 dark:invert" />
+          <Link
+            to="/"
+            className="flex items-center gap-2 font-serif text-lg font-semibold text-primary"
+          >
+            <img
+              src={wolfLogo}
+              alt="MUSE Students Voice"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain dark:brightness-0 dark:invert"
+            />
             <span className="leading-tight">
               Students Voice
-              <span className="block text-[10px] font-sans font-normal uppercase tracking-wider text-muted-foreground">MUSE · Mysore University School of Engineering</span>
+              <span className="block text-[10px] font-sans font-normal uppercase tracking-wider text-muted-foreground">
+                MUSE · Mysore University School of Engineering
+              </span>
             </span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
-            <Link to="/" className="rounded px-3 py-1.5 hover:bg-muted">Public</Link>
+            <Link to="/" className="rounded px-3 py-1.5 hover:bg-muted">
+              Public
+            </Link>
             <Link to="/verified" className="rounded px-3 py-1.5 hover:bg-muted">
-              <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Verified</span>
+              <span className="inline-flex items-center gap-1">
+                <ShieldCheck className="h-3.5 w-3.5" /> Verified
+              </span>
             </Link>
             <Link to="/about" className="hidden rounded px-3 py-1.5 hover:bg-muted sm:inline-block">
-              <span className="inline-flex items-center gap-1"><Info className="h-3.5 w-3.5" /> About</span>
+              <span className="inline-flex items-center gap-1">
+                <Info className="h-3.5 w-3.5" /> About
+              </span>
             </Link>
             {user && profile && (
               <>
-                <Link to="/feed" className="rounded px-3 py-1.5 hover:bg-muted">Feed</Link>
-                <Link to="/my-complaints" className="hidden rounded px-3 py-1.5 hover:bg-muted sm:inline-block">Mine</Link>
+                <Link to="/feed" className="rounded px-3 py-1.5 hover:bg-muted">
+                  Feed
+                </Link>
+                <Link
+                  to="/my-complaints"
+                  className="hidden rounded px-3 py-1.5 hover:bg-muted sm:inline-block"
+                >
+                  Mine
+                </Link>
               </>
             )}
             {isAdmin && (
-              <Link to="/admin" className="rounded px-3 py-1.5 hover:bg-muted">Admin</Link>
+              <Link to="/admin" className="rounded px-3 py-1.5 hover:bg-muted">
+                Admin
+              </Link>
             )}
             {user ? (
               <div className="ml-2 flex items-center gap-2">
@@ -67,38 +93,85 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="mt-12 border-t border-border bg-card/60 text-muted-foreground">
         <div className="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-2 md:grid-cols-4">
           <div className="flex flex-col items-start gap-3">
-            <img src={wolfLogo} alt="MUSE Students Voice" width={48} height={48} loading="lazy" className="h-12 w-12 object-contain dark:brightness-0 dark:invert" />
+            <img
+              src={wolfLogo}
+              alt="MUSE Students Voice"
+              width={48}
+              height={48}
+              loading="lazy"
+              className="h-12 w-12 object-contain dark:brightness-0 dark:invert"
+            />
             <div className="font-serif text-base font-semibold text-foreground">Students Voice</div>
             <p className="text-xs leading-relaxed">
-              MUSE · Mysore University<br />School of Engineering
+              MUSE · Mysore University
+              <br />
+              School of Engineering
             </p>
           </div>
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">Main Links</h3>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">
+              Main Links
+            </h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/" className="hover:text-foreground">Public</Link></li>
-              <li><Link to="/verified" className="hover:text-foreground">Verified</Link></li>
-              <li><Link to="/about" className="hover:text-foreground">About</Link></li>
-              <li><Link to="/feed" className="hover:text-foreground">Feed</Link></li>
+              <li>
+                <Link to="/" className="hover:text-foreground">
+                  Public
+                </Link>
+              </li>
+              <li>
+                <Link to="/verified" className="hover:text-foreground">
+                  Verified
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-foreground">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/feed" className="hover:text-foreground">
+                  Feed
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">Policies</h3>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">
+              Policies
+            </h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/privacy" className="hover:text-foreground">Privacy &amp; Anonymity</Link></li>
-              <li><Link to="/terms" className="hover:text-foreground">Terms of Use</Link></li>
+              <li>
+                <Link to="/privacy" className="hover:text-foreground">
+                  Privacy &amp; Anonymity
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="hover:text-foreground">
+                  Terms of Use
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">Contact</h3>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-foreground">
+              Contact
+            </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="mailto:studentsvoice.muse@gmail.com" className="hover:text-foreground break-all">studentsvoice.muse@gmail.com</a></li>
+              <li>
+                <a
+                  href="mailto:studentsvoice.muse@gmail.com"
+                  className="hover:text-foreground break-all"
+                >
+                  studentsvoice.muse@gmail.com
+                </a>
+              </li>
             </ul>
           </div>
         </div>
         <div className="border-t border-border">
           <p className="mx-auto max-w-5xl px-4 py-4 text-center text-xs">
-            © {new Date().getFullYear()} MUSE Students Voice. A peer-moderated record of student grievances. All rights reserved.
+            © {new Date().getFullYear()} MUSE Students Voice. A peer-moderated record of student
+            grievances. All rights reserved.
           </p>
         </div>
       </footer>

@@ -10,11 +10,23 @@ export const Route = createFileRoute("/verified")({
   head: () => ({
     meta: [
       { title: "Verified complaints — MUSE Students Voice" },
-      { name: "description", content: "Permanent archive of MUSE student complaints verified true by ≥70% of peer voters and escalated by email to the Director and Vice-Chancellor." },
+      {
+        name: "description",
+        content:
+          "Permanent archive of MUSE student complaints verified true by ≥70% of peer voters and escalated by email to the Director and Vice-Chancellor.",
+      },
       { property: "og:title", content: "Verified complaints — MUSE Students Voice" },
-      { property: "og:description", content: "Permanent record of MUSE student complaints peer-verified as credible and forwarded to the Director and VC of Mysore University." },
+      {
+        property: "og:description",
+        content:
+          "Permanent record of MUSE student complaints peer-verified as credible and forwarded to the Director and VC of Mysore University.",
+      },
       { name: "twitter:title", content: "Verified complaints — MUSE Students Voice" },
-      { name: "twitter:description", content: "Permanent record of MUSE student complaints peer-verified as credible and forwarded to the Director and VC of Mysore University." },
+      {
+        name: "twitter:description",
+        content:
+          "Permanent record of MUSE student complaints peer-verified as credible and forwarded to the Director and VC of Mysore University.",
+      },
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/verified" },
     ],
     links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/verified" }],
@@ -31,23 +43,35 @@ function VerifiedPage() {
     <SiteShell>
       <h1 className="mb-1 font-serif text-2xl font-semibold">Verified complaints</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Marked true by ≥70% of voters. Kept on record permanently and escalated to the Director &amp; VC.
+        Marked true by ≥70% of voters. Kept on record permanently and escalated to the Director
+        &amp; VC.
       </p>
       {isLoading ? (
         <PostCardSkeletonList count={3} />
       ) : isError ? (
         <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-6 text-center text-sm">
           <p>Something went wrong loading complaints.</p>
-          <Button size="sm" variant="outline" className="mt-3" onClick={() => refetch()} disabled={isFetching}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-3"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
             {isFetching ? "Retrying…" : "Try again"}
           </Button>
         </div>
       ) : !data || data.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          No complaints have been verified yet. Keep voting on the public feed to help credible issues reach leadership.
+          No complaints have been verified yet. Keep voting on the public feed to help credible
+          issues reach leadership.
         </p>
       ) : (
-        <div className="space-y-3">{data.map((p) => <PostCard key={p.id} post={p} compact />)}</div>
+        <div className="space-y-3">
+          {data.map((p) => (
+            <PostCard key={p.id} post={p} compact />
+          ))}
+        </div>
       )}
     </SiteShell>
   );

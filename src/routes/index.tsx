@@ -7,8 +7,12 @@ import { PostCard } from "@/components/PostCard";
 import { PostCardSkeletonList } from "@/components/PostCardSkeleton";
 import {
   fetchPublicPosts,
-  LOCATIONS, LOCATION_LABEL, type Location,
-  ISSUE_TYPES, ISSUE_LABEL, type IssueType,
+  LOCATIONS,
+  LOCATION_LABEL,
+  type Location,
+  ISSUE_TYPES,
+  ISSUE_LABEL,
+  type IssueType,
 } from "@/lib/posts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,11 +23,23 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Students Voice — MUSE student complaints board" },
-      { name: "description", content: "Public, anonymous board of student complaints from MUSE (Mysore University School of Engineering). Peer-verified issues are escalated to the Director and VC." },
+      {
+        name: "description",
+        content:
+          "Public, anonymous board of student complaints from MUSE (Mysore University School of Engineering). Peer-verified issues are escalated to the Director and VC.",
+      },
       { property: "og:title", content: "Students Voice — MUSE student complaints board" },
-      { property: "og:description", content: "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership." },
+      {
+        property: "og:description",
+        content:
+          "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership.",
+      },
       { name: "twitter:title", content: "Students Voice — MUSE student complaints board" },
-      { name: "twitter:description", content: "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership." },
+      {
+        name: "twitter:description",
+        content:
+          "Browse the latest complaints from MUSE students. See trending verified issues this week and a public record of what has been escalated to leadership.",
+      },
       { property: "og:url", content: "https://muse-studentsvoice.lovable.app/" },
     ],
     links: [{ rel: "canonical", href: "https://muse-studentsvoice.lovable.app/" }],
@@ -47,24 +63,33 @@ function Index() {
   const verifiedAll = (data ?? []).filter((p) => p.status === "verified_true");
   const verifiedThisWeek = verifiedAll
     .filter((p) => p.resolved_at && new Date(p.resolved_at).getTime() > weekCutoff)
-    .sort((a, b) => (b.true_count - b.false_count) - (a.true_count - a.false_count))
+    .sort((a, b) => b.true_count - b.false_count - (a.true_count - a.false_count))
     .slice(0, 3);
   const totalOpen = (data ?? []).filter((p) => p.status === "open").length;
   const totalVerified = verifiedAll.length;
 
   const q = search.trim().toLowerCase();
-  let filtered = (data ?? []).filter((p) =>
-    (filterLoc === "all" || p.location === filterLoc) &&
-    (filterIssue === "all" || p.issue_type === filterIssue) &&
-    (q === "" || p.body.toLowerCase().includes(q)),
+  let filtered = (data ?? []).filter(
+    (p) =>
+      (filterLoc === "all" || p.location === filterLoc) &&
+      (filterIssue === "all" || p.issue_type === filterIssue) &&
+      (q === "" || p.body.toLowerCase().includes(q)),
   );
   if (sort === "most_voted") {
-    filtered = [...filtered].sort((a, b) => (b.true_count + b.false_count) - (a.true_count + a.false_count));
+    filtered = [...filtered].sort(
+      (a, b) => b.true_count + b.false_count - (a.true_count + a.false_count),
+    );
   } else if (sort === "trending") {
     const cutoff = Date.now() - 24 * 60 * 60 * 1000;
     filtered = [...filtered].sort((a, b) => {
-      const ta = new Date(a.created_at).getTime() > cutoff ? (a.true_count + a.false_count) * 2 : (a.true_count + a.false_count);
-      const tb = new Date(b.created_at).getTime() > cutoff ? (b.true_count + b.false_count) * 2 : (b.true_count + b.false_count);
+      const ta =
+        new Date(a.created_at).getTime() > cutoff
+          ? (a.true_count + a.false_count) * 2
+          : a.true_count + a.false_count;
+      const tb =
+        new Date(b.created_at).getTime() > cutoff
+          ? (b.true_count + b.false_count) * 2
+          : b.true_count + b.false_count;
       return tb - ta;
     });
   }
@@ -83,12 +108,18 @@ function Index() {
         </p>
         {!user && (
           <div className="mt-4">
-            <Link to="/auth"><Button>Sign in with your USN</Button></Link>
+            <Link to="/auth">
+              <Button>Sign in with your USN</Button>
+            </Link>
           </div>
         )}
         {user && !profile && (
           <p className="mt-4 text-sm text-destructive">
-            Your account isn't linked to a USN yet. <Link to="/auth" className="underline">Finish setup</Link>.
+            Your account isn't linked to a USN yet.{" "}
+            <Link to="/auth" className="underline">
+              Finish setup
+            </Link>
+            .
           </p>
         )}
       </section>
@@ -99,11 +130,15 @@ function Index() {
           <p className="mt-1 font-serif text-2xl font-semibold">{totalOpen}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Verified &amp; escalated</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
+            Verified &amp; escalated
+          </p>
           <p className="mt-1 font-serif text-2xl font-semibold text-primary">{totalVerified}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Verified this week</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
+            Verified this week
+          </p>
           <p className="mt-1 font-serif text-2xl font-semibold">{verifiedThisWeek.length}</p>
         </div>
       </section>
@@ -114,7 +149,9 @@ function Index() {
             Trending verified this week
           </h2>
           <div className="space-y-3">
-            {verifiedThisWeek.map((p) => <PostCard key={p.id} post={p} compact />)}
+            {verifiedThisWeek.map((p) => (
+              <PostCard key={p.id} post={p} compact />
+            ))}
           </div>
         </section>
       )}
@@ -125,7 +162,11 @@ function Index() {
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-end">
         <div className="grow">
           <label className="text-xs font-medium text-muted-foreground">Search</label>
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Find by keyword…" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Find by keyword…"
+          />
         </div>
         <div>
           <label className="text-xs font-medium text-muted-foreground">Location</label>
@@ -136,7 +177,9 @@ function Index() {
           >
             <option value="all">All locations</option>
             {LOCATIONS.map((l) => (
-              <option key={l} value={l}>{LOCATION_LABEL[l]}</option>
+              <option key={l} value={l}>
+                {LOCATION_LABEL[l]}
+              </option>
             ))}
           </select>
         </div>
@@ -149,7 +192,9 @@ function Index() {
           >
             <option value="all">All issues</option>
             {ISSUE_TYPES.map((i) => (
-              <option key={i} value={i}>{ISSUE_LABEL[i]}</option>
+              <option key={i} value={i}>
+                {ISSUE_LABEL[i]}
+              </option>
             ))}
           </select>
         </div>
@@ -171,7 +216,13 @@ function Index() {
       ) : isError ? (
         <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-6 text-center text-sm">
           <p>Something went wrong loading complaints.</p>
-          <Button size="sm" variant="outline" className="mt-3" onClick={() => refetch()} disabled={isFetching}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-3"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
             {isFetching ? "Retrying…" : "Try again"}
           </Button>
         </div>
@@ -179,14 +230,20 @@ function Index() {
         <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
           <p>No complaints yet. Be the first to raise one.</p>
           <Link to={user && profile ? "/feed" : "/auth"} className="mt-3 inline-block">
-            <Button size="sm">{user && profile ? "Post a complaint" : "Sign in with your USN"}</Button>
+            <Button size="sm">
+              {user && profile ? "Post a complaint" : "Sign in with your USN"}
+            </Button>
           </Link>
         </div>
       ) : filtered.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">No matching complaints. Try clearing filters.</p>
+        <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+          No matching complaints. Try clearing filters.
+        </p>
       ) : (
         <div className="space-y-3">
-          {filtered.map((p) => <PostCard key={p.id} post={p} compact />)}
+          {filtered.map((p) => (
+            <PostCard key={p.id} post={p} compact />
+          ))}
         </div>
       )}
     </SiteShell>

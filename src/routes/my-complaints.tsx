@@ -13,11 +13,23 @@ export const Route = createFileRoute("/my-complaints")({
   head: () => ({
     meta: [
       { title: "My complaints — MUSE Students Voice" },
-      { name: "description", content: "Private dashboard of complaints you submitted on MUSE Students Voice with current status (open, verified, removed) and live peer vote counts." },
+      {
+        name: "description",
+        content:
+          "Private dashboard of complaints you submitted on MUSE Students Voice with current status (open, verified, removed) and live peer vote counts.",
+      },
       { property: "og:title", content: "My complaints — MUSE Students Voice" },
-      { property: "og:description", content: "Track every complaint you posted on MUSE Students Voice — status, vote tallies, and comment activity in one place." },
+      {
+        property: "og:description",
+        content:
+          "Track every complaint you posted on MUSE Students Voice — status, vote tallies, and comment activity in one place.",
+      },
       { name: "twitter:title", content: "My complaints — MUSE Students Voice" },
-      { name: "twitter:description", content: "Track every complaint you posted on MUSE Students Voice — status, vote tallies, and comment activity in one place." },
+      {
+        name: "twitter:description",
+        content:
+          "Track every complaint you posted on MUSE Students Voice — status, vote tallies, and comment activity in one place.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -66,7 +78,9 @@ function MyComplaints() {
       <SiteShell>
         <div className="rounded-lg border border-border bg-card p-6 text-center">
           <p className="text-sm">Sign in with your USN to see your complaints.</p>
-          <Link to="/auth" className="mt-3 inline-block"><Button>Sign in</Button></Link>
+          <Link to="/auth" className="mt-3 inline-block">
+            <Button>Sign in</Button>
+          </Link>
         </div>
       </SiteShell>
     );
@@ -84,14 +98,22 @@ function MyComplaints() {
       ) : isError ? (
         <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-6 text-center text-sm">
           <p>Couldn't load your complaints.</p>
-          <Button size="sm" variant="outline" className="mt-3" onClick={() => refetch()} disabled={isFetching}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-3"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
             {isFetching ? "Retrying…" : "Try again"}
           </Button>
         </div>
       ) : !data || data.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
           <p>You haven't posted any complaints yet.</p>
-          <Link to="/feed" className="mt-3 inline-block"><Button size="sm">Post one now</Button></Link>
+          <Link to="/feed" className="mt-3 inline-block">
+            <Button size="sm">Post one now</Button>
+          </Link>
         </div>
       ) : (
         <ul className="space-y-3">
@@ -102,23 +124,34 @@ function MyComplaints() {
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                   <span className="inline-flex flex-wrap items-center gap-1.5">
                     <span className="rounded-full bg-secondary px-2 py-0.5 font-medium text-secondary-foreground">
-                      {LOCATION_LABEL[((p as unknown as { location?: Location }).location ?? "other") as Location] ?? "Other"}
+                      {LOCATION_LABEL[
+                        ((p as unknown as { location?: Location }).location ?? "other") as Location
+                      ] ?? "Other"}
                     </span>
                     <span className="rounded-full bg-accent px-2 py-0.5 font-medium text-accent-foreground">
-                      {ISSUE_LABEL[((p as unknown as { issue_type?: IssueType }).issue_type ?? "other") as IssueType] ?? "Other"}
+                      {ISSUE_LABEL[
+                        ((p as unknown as { issue_type?: IssueType }).issue_type ??
+                          "other") as IssueType
+                      ] ?? "Other"}
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {formatDistanceToNow(new Date(p.created_at), { addSuffix: true })}
                     </span>
                   </span>
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${s.tone}`}>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${s.tone}`}
+                  >
                     {p.status === "verified_true" && <ShieldCheck className="h-3 w-3" />}
                     {p.status === "removed_by_author" && <Trash2 className="h-3 w-3" />}
                     {s.label}
                   </span>
                 </div>
-                <Link to="/post/$id" params={{ id: p.id }} className="block text-sm hover:underline">
+                <Link
+                  to="/post/$id"
+                  params={{ id: p.id }}
+                  className="block text-sm hover:underline"
+                >
                   <p className="line-clamp-3 whitespace-pre-wrap">{p.body}</p>
                 </Link>
                 <p className="mt-2 text-xs text-muted-foreground">
