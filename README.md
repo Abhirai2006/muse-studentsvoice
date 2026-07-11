@@ -250,7 +250,7 @@ directly — everything goes through views or `SECURITY DEFINER` functions.
 ## 👑 Admin Access
 
 Admin is granted by a row in `user_roles` (`role = 'admin'`) scoped to a
-specific USN. Current admin: **`24SEAI003`**.
+specific USN. Current admin: Find it if u can.
 
 ```sql
 insert into public.user_roles (user_id, role)
