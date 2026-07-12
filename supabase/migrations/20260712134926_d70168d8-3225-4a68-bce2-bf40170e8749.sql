@@ -1,0 +1,2 @@
+UPDATE public.posts SET status = 'verified_true', resolved_at = now() WHERE id = '604ffd24-5c3c-498a-8074-f44b710391cb';
+INSERT INTO public.escalations (post_id) VALUES ('604ffd24-5c3c-498a-8074-f44b710391cb') ON CONFLICT (post_id) DO NOTHING;
