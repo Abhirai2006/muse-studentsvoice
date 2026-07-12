@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { SiteShell } from "@/components/SiteShell";
@@ -10,6 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  ALLOWED_ATTACHMENT_TYPES,
+  MAX_ATTACHMENTS,
+  MAX_ATTACHMENT_BYTES,
+  uploadPostAttachments,
+} from "@/lib/attachments";
+import { X, Paperclip } from "lucide-react";
 import {
   fetchPublicPosts,
   LOCATIONS,
@@ -53,6 +60,40 @@ const bodySchema = z
   .min(10, "At least 10 characters")
   .max(4000, "Keep it under 4000 characters");
 
+const MAX_POSTS_PER_DAY = 3;
+
+// Rough duplicate detection using bigram Jaccard similarity on normalized text.
+// Warns (does not block) when similarity crosses this threshold.
+const DUPLICATE_WARN_THRESHOLD = 0.55;
+
+function normalize(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+function bigrams(s: string) {
+  const n = normalize(s);
+  const set = new Set<string>();
+  for (let i = 0; i < n.length - 1; i++) set.add(n.slice(i, i + 2));
+  return set;
+}
+function similarity(a: string, b: string) {
+  const A = bigrams(a);
+  const B = bigrams(b);
+  if (A.size === 0 || B.size === 0) return 0;
+  let inter = 0;
+  A.forEach((x) => B.has(x) && inter++);
+  const union = A.size + B.size - inter;
+  return union === 0 ? 0 : inter / union;
+}
+
+function formatDuration(ms: number) {
+  if (ms <= 0) return "0m";
+  const totalMin = Math.ceil(ms / 60000);
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  if (h === 0) return `${m}m`;
+  return `${h}h ${m}m`;
+}
+
 function FeedPage() {
   const { user, profile, loading } = useAuth();
   const qc = useQueryClient();
@@ -64,12 +105,79 @@ function FeedPage() {
   const [sort, setSort] = useState<"newest" | "most_voted" | "trending">("newest");
   const [filterLoc, setFilterLoc] = useState<Location | "all">("all");
   const [filterIssue, setFilterIssue] = useState<IssueType | "all">("all");
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ["public_posts"],
     queryFn: () => fetchPublicPosts(),
     enabled: !loading,
   });
+
+  // Recent own posts — used for the rate-limit cooldown display and duplicate warnings.
+  const recentMine = useQuery({
+    queryKey: ["my_recent_posts", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const since = new Date(Date.now() - 7 * 24 * 3600_000).toISOString();
+      const { data, error } = await supabase
+        .from("my_posts")
+        .select("id, body, created_at, location, issue_type")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const cooldown = useMemo(() => {
+    const rows = (recentMine.data ?? []).filter(
+      (r) => new Date(r.created_at as string).getTime() > now - 24 * 3600_000,
+    );
+    if (rows.length < MAX_POSTS_PER_DAY) return null;
+    // Rate-limit resets when the oldest of the last N posts falls out of the 24h window.
+    const oldest = rows.slice(-MAX_POSTS_PER_DAY)[0];
+    const resetsAt = new Date(oldest.created_at as string).getTime() + 24 * 3600_000;
+    return resetsAt > now ? resetsAt : null;
+  }, [recentMine.data, now]);
+
+  const postsRemaining = Math.max(
+    0,
+    MAX_POSTS_PER_DAY -
+      (recentMine.data ?? []).filter(
+        (r) => new Date(r.created_at as string).getTime() > now - 24 * 3600_000,
+      ).length,
+  );
+
+  function onPickFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const picked = Array.from(e.target.files ?? []);
+    if (picked.length === 0) return;
+    const combined = [...files, ...picked].slice(0, MAX_ATTACHMENTS);
+    for (const f of combined) {
+      if (!ALLOWED_ATTACHMENT_TYPES.includes(f.type)) {
+        toast.error(`"${f.name}" is not a supported image type.`);
+        e.target.value = "";
+        return;
+      }
+      if (f.size > MAX_ATTACHMENT_BYTES) {
+        toast.error(`"${f.name}" is larger than 5 MB.`);
+        e.target.value = "";
+        return;
+      }
+    }
+    setFiles(combined);
+    e.target.value = "";
+  }
+
+  function removeFile(idx: number) {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+  }
 
   if (!loading && !user) {
     return (
@@ -111,24 +219,89 @@ function FeedPage() {
       return;
     }
     if (!user) return;
+    if (cooldown) {
+      toast.error(
+        `You've posted ${MAX_POSTS_PER_DAY} complaints in the last 24 hours. Please wait ${formatDuration(
+          cooldown - Date.now(),
+        )} before posting again.`,
+      );
+      return;
+    }
+
+    // Duplicate warning — non-blocking. Compare against the user's own last 7 days
+    // AND the current public feed for the same location + issue type.
+    const myMatch = (recentMine.data ?? [])
+      .map((r) => ({ ...r, sim: similarity(parsed.data, r.body as string) }))
+      .filter((r) => r.sim >= DUPLICATE_WARN_THRESHOLD)
+      .sort((a, b) => b.sim - a.sim)[0];
+    const feedMatch = !myMatch
+      ? (data ?? [])
+          .filter(
+            (p) =>
+              p.location === location &&
+              p.issue_type === issueType &&
+              (p.status === "open" || p.status === "verified_true"),
+          )
+          .map((p) => ({ ...p, sim: similarity(parsed.data, p.body) }))
+          .filter((p) => p.sim >= DUPLICATE_WARN_THRESHOLD)
+          .sort((a, b) => b.sim - a.sim)[0]
+      : undefined;
+    const match = myMatch ?? feedMatch;
+    if (match) {
+      const pct = Math.round(match.sim * 100);
+      const ok = window.confirm(
+        `This looks ${pct}% similar to an existing complaint:\n\n"${(match.body as string).slice(
+          0,
+          160,
+        )}${(match.body as string).length > 160 ? "…" : ""}"\n\nPosting duplicates makes it harder for others to vote. Post it anyway?`,
+      );
+      if (!ok) return;
+    }
+
     setBusy(true);
-    const { error } = await supabase.from("posts").insert({
-      author_id: user.id,
-      body: parsed.data,
-      location,
-      issue_type: issueType,
-      category: "other",
-    });
+    const { data: inserted, error } = await supabase
+      .from("posts")
+      .insert({
+        author_id: user.id,
+        body: parsed.data,
+        location,
+        issue_type: issueType,
+        category: "other",
+      })
+      .select("id")
+      .maybeSingle();
     setBusy(false);
     if (error) {
-      toast.error(error.message);
+      if (/Daily limit/i.test(error.message)) {
+        // Trigger rejected — refetch cooldown state so the banner updates.
+        qc.invalidateQueries({ queryKey: ["my_recent_posts", user.id] });
+        toast.error(
+          `You've hit the limit of ${MAX_POSTS_PER_DAY} complaints per 24 hours. Please try again a little later.`,
+        );
+      } else {
+        toast.error(error.message);
+      }
       return;
+    }
+    // Upload attachments (if any) once the post row exists.
+    if (files.length > 0 && inserted?.id) {
+      try {
+        await uploadPostAttachments(inserted.id, user.id, files);
+      } catch (e) {
+        toast.error(
+          `Complaint posted, but image upload failed: ${(e as Error).message}`,
+        );
+      }
     }
     setBody("");
     setLocation("");
     setIssueType("");
+    setFiles([]);
     toast.success("Complaint posted.");
     qc.invalidateQueries({ queryKey: ["public_posts"] });
+    qc.invalidateQueries({ queryKey: ["my_recent_posts", user.id] });
+    qc.invalidateQueries({ queryKey: ["my_posts", user.id] });
+      return;
   }
 
   return (
