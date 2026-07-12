@@ -61,13 +61,13 @@ function MyComplaints() {
       const { data: tallies } = await supabase
         .from("public_posts")
         .select("id, true_count, false_count, comment_count")
-        .in("id", ids);
+        .in("id", ids as string[]);
       const map = new Map((tallies ?? []).map((t) => [t.id, t]));
       return (posts ?? []).map((p) => ({
         ...p,
-        true_count: map.get(p.id)?.true_count ?? 0,
-        false_count: map.get(p.id)?.false_count ?? 0,
-        comment_count: map.get(p.id)?.comment_count ?? 0,
+        true_count: (p.id ? map.get(p.id)?.true_count : 0) ?? 0,
+        false_count: (p.id ? map.get(p.id)?.false_count : 0) ?? 0,
+        comment_count: (p.id ? map.get(p.id)?.comment_count : 0) ?? 0,
       }));
     },
   });
