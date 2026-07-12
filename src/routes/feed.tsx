@@ -301,7 +301,6 @@ function FeedPage() {
     qc.invalidateQueries({ queryKey: ["public_posts"] });
     qc.invalidateQueries({ queryKey: ["my_recent_posts", user.id] });
     qc.invalidateQueries({ queryKey: ["my_posts", user.id] });
-      return;
   }
 
   return (
