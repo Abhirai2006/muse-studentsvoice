@@ -117,7 +117,7 @@ function MyComplaints() {
       ) : (
         <ul className="space-y-3">
           {data.map((p) => {
-            const s = STATUS_LABEL[p.status] ?? STATUS_LABEL.open;
+            const s = STATUS_LABEL[p.status ?? "open"] ?? STATUS_LABEL.open;
             return (
               <li key={p.id} className="rounded-lg border border-border bg-card p-4">
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
@@ -135,7 +135,7 @@ function MyComplaints() {
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      {formatDistanceToNow(new Date(p.created_at), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(p.created_at ?? Date.now()), { addSuffix: true })}
                     </span>
                   </span>
                   <span
