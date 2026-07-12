@@ -51,9 +51,8 @@ function MyComplaints() {
     enabled: !!user,
     queryFn: async () => {
       const { data: posts, error } = await supabase
-        .from("posts")
+        .from("my_posts")
         .select("id, body, location, issue_type, status, created_at, resolved_at")
-        .eq("author_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       // Fetch tallies via the public view in one go.
@@ -62,13 +61,13 @@ function MyComplaints() {
       const { data: tallies } = await supabase
         .from("public_posts")
         .select("id, true_count, false_count, comment_count")
-        .in("id", ids);
+        .in("id", ids as string[]);
       const map = new Map((tallies ?? []).map((t) => [t.id, t]));
       return (posts ?? []).map((p) => ({
         ...p,
-        true_count: map.get(p.id)?.true_count ?? 0,
-        false_count: map.get(p.id)?.false_count ?? 0,
-        comment_count: map.get(p.id)?.comment_count ?? 0,
+        true_count: (p.id ? map.get(p.id)?.true_count : 0) ?? 0,
+        false_count: (p.id ? map.get(p.id)?.false_count : 0) ?? 0,
+        comment_count: (p.id ? map.get(p.id)?.comment_count : 0) ?? 0,
       }));
     },
   });
@@ -118,7 +117,7 @@ function MyComplaints() {
       ) : (
         <ul className="space-y-3">
           {data.map((p) => {
-            const s = STATUS_LABEL[p.status] ?? STATUS_LABEL.open;
+            const s = STATUS_LABEL[p.status ?? "open"] ?? STATUS_LABEL.open;
             return (
               <li key={p.id} className="rounded-lg border border-border bg-card p-4">
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
@@ -136,7 +135,7 @@ function MyComplaints() {
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      {formatDistanceToNow(new Date(p.created_at), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(p.created_at ?? Date.now()), { addSuffix: true })}
                     </span>
                   </span>
                   <span
