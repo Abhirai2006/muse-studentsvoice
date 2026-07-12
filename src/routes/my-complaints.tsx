@@ -51,9 +51,8 @@ function MyComplaints() {
     enabled: !!user,
     queryFn: async () => {
       const { data: posts, error } = await supabase
-        .from("posts")
+        .from("my_posts")
         .select("id, body, location, issue_type, status, created_at, resolved_at")
-        .eq("author_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       // Fetch tallies via the public view in one go.
