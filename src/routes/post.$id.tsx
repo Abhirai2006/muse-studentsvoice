@@ -7,6 +7,7 @@ import { ShieldCheck, ThumbsUp, ThumbsDown, Clock, Trash2, Pencil, Flag } from "
 import { SiteShell } from "@/components/SiteShell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { PostAttachments } from "@/components/PostAttachments";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -294,6 +295,8 @@ function PostDetailPage() {
         ) : (
           <p className="whitespace-pre-wrap text-sm leading-relaxed">{p.body}</p>
         )}
+
+        {!editing && <PostAttachments postId={id} />}
 
         {owns.data && !locked && !editing && (
           <div className="mt-4 flex gap-2">
