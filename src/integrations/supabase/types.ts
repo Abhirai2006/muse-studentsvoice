@@ -68,6 +68,13 @@ export type Database = {
             foreignKeyName: "comments_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "post_tallies"
             referencedColumns: ["post_id"]
           },
@@ -135,6 +142,13 @@ export type Database = {
             foreignKeyName: "escalations_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: true
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escalations_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
             referencedRelation: "post_tallies"
             referencedColumns: ["post_id"]
           },
@@ -184,6 +198,13 @@ export type Database = {
             foreignKeyName: "post_flags_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "post_tallies"
             referencedColumns: ["post_id"]
           },
@@ -220,6 +241,13 @@ export type Database = {
           true_count?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "post_vote_tallies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "post_vote_tallies_post_id_fkey"
             columns: ["post_id"]
@@ -404,6 +432,13 @@ export type Database = {
             foreignKeyName: "votes_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "post_tallies"
             referencedColumns: ["post_id"]
           },
@@ -425,6 +460,42 @@ export type Database = {
       }
     }
     Views: {
+      my_posts: {
+        Row: {
+          body: string | null
+          category: Database["public"]["Enums"]["post_category"] | null
+          created_at: string | null
+          id: string | null
+          issue_type: string | null
+          location: string | null
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["post_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          body?: string | null
+          category?: Database["public"]["Enums"]["post_category"] | null
+          created_at?: string | null
+          id?: string | null
+          issue_type?: string | null
+          location?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          body?: string | null
+          category?: Database["public"]["Enums"]["post_category"] | null
+          created_at?: string | null
+          id?: string | null
+          issue_type?: string | null
+          location?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["post_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       post_flag_counts: {
         Row: {
           flag_count: number | null
@@ -432,6 +503,13 @@ export type Database = {
           post_id: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "post_flags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "post_flags_post_id_fkey"
             columns: ["post_id"]
@@ -492,6 +570,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "comments_post_id_fkey"
             columns: ["post_id"]
