@@ -369,11 +369,58 @@ function FeedPage() {
           className="mt-3"
           maxLength={4000}
         />
+        <div className="mt-3">
+          <label className="text-xs font-medium text-muted-foreground">
+            Evidence images (optional) — up to {MAX_ATTACHMENTS}, 5 MB each
+          </label>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={ALLOWED_ATTACHMENT_TYPES.join(",")}
+              multiple
+              onChange={onPickFiles}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={files.length >= MAX_ATTACHMENTS}
+            >
+              <Paperclip className="mr-1.5 h-3.5 w-3.5" />
+              {files.length === 0 ? "Attach images" : "Add more"}
+            </Button>
+            {files.map((f, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-1 text-xs"
+              >
+                <span className="max-w-[160px] truncate">{f.name}</span>
+                <button
+                  type="button"
+                  onClick={() => removeFile(i)}
+                  className="rounded-full p-0.5 hover:bg-background"
+                  aria-label={`Remove ${f.name}`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+        {cooldown && (
+          <div className="mt-3 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
+            You've posted {MAX_POSTS_PER_DAY} complaints in the last 24 hours. You can post again in{" "}
+            <span className="font-medium">{formatDuration(cooldown - now)}</span>.
+          </div>
+        )}
         <div className="mt-2 flex items-center justify-between">
           <span className="text-xs text-muted-foreground">
-            {body.length}/4000 · max 3 posts/day
+            {body.length}/4000 · {postsRemaining} of {MAX_POSTS_PER_DAY} posts left today
           </span>
-          <Button onClick={submit} disabled={busy}>
+          <Button onClick={submit} disabled={busy || !!cooldown}>
             {busy ? "Posting…" : "Post complaint"}
           </Button>
         </div>
