@@ -168,6 +168,68 @@ export type Database = {
           },
         ]
       }
+      post_attachments: {
+        Row: {
+          created_at: string
+          id: string
+          mime_type: string
+          order_index: number
+          post_id: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mime_type: string
+          order_index?: number
+          post_id: string
+          size_bytes: number
+          storage_path: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mime_type?: string
+          order_index?: number
+          post_id?: string
+          size_bytes?: number
+          storage_path?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_attachments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "my_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_attachments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "post_tallies"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_attachments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_attachments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "public_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_flags: {
         Row: {
           created_at: string
